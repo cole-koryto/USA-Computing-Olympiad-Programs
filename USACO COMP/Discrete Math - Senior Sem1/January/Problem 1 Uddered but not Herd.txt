@@ -1,0 +1,49 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   DM
+LAST MODIFIED   :   1/22/21
+PROBLEM ID      :   Uddered but not Herd
+DESCRIPTION	:   In this problem I had to find
+		:   the number of times needed to pass
+		:   through a string so that a given
+		:   substring could be spelled from left
+		:   to right.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class Main
+{
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(System.in);
+
+        //variable declarations
+        String cowphabet = input.next();
+        String heard = input.next();
+        int totalPasses = 0;
+        int heardIndex = 0;
+
+        //passes through cowphabet to find the number of passes
+        while(heardIndex<heard.length())
+        {
+            totalPasses++;
+
+            //runs through cowphabet
+            for(int i = 0; i < cowphabet.length(); i++)
+            {
+                if(heard.charAt(heardIndex) == cowphabet.charAt(i))
+                    heardIndex++;
+                if(heardIndex >= heard.length())
+                    break;
+            }
+        }
+
+        //output results
+        System.out.println(totalPasses);
+    }
+}

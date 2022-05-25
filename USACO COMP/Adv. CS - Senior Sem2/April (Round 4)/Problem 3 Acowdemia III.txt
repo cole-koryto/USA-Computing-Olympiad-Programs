@@ -1,0 +1,87 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   Adv. CS
+LAST MODIFIED   :   4/4/21
+PROBLEM ID      :   Problem 3 Acowdemia III
+DESCRIPTION	:   In this problem I had go through an array
+                :   and find the number of unique pairs of cows
+                :   that were vertically or horizontally adjacent to a
+                :   square of grass
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.util.*;
+
+class Main
+{
+    public static void main(String[] args)
+    {
+        //declares variables and sets up input
+        Scanner input = new Scanner(System.in);
+        int numFriends = 0;
+        int numRows = input.nextInt();
+        int numColumns = input.nextInt();
+        boolean[][] cowPositions = new boolean[numRows][numColumns];
+        for(int i = 0; i < numRows; i++)
+            Arrays.fill(cowPositions[i],false);
+        boolean[][] uniquePair = new boolean[numRows*numColumns][numRows*numColumns];
+        for(int i = 0; i < numRows*numColumns; i++)
+            Arrays.fill(uniquePair[i],true);
+        ArrayList<int[]> grassIndexes = new ArrayList<>();
+        ArrayList<Integer> cowUniqueIDs = new ArrayList<>();
+        String tempString;
+        for(int i = 0; i < numRows; i++)
+        {
+            tempString = input.next();
+            for(int j = 0; j < numColumns; j++)
+            {
+                if(tempString.charAt(j) == 'C')
+                    cowPositions[i][j] = true;
+                else if(tempString.charAt(j) == 'G')
+                    grassIndexes.add(new int[]{i, j});
+            }
+        }
+        input.close();
+
+        //checks how many grass squares have at least one pair of cows adjacent
+        for(int i = 0; i < grassIndexes.size(); i++)
+        {
+            //checks through adjacent cells and tries to find at least two cows
+            cowUniqueIDs.clear();
+            if(grassIndexes.get(i)[0]-1 >= 0 && cowPositions[grassIndexes.get(i)[0]-1][grassIndexes.get(i)[1]])
+                cowUniqueIDs.add((grassIndexes.get(i)[0]-1) * numColumns + grassIndexes.get(i)[1]);
+            if(grassIndexes.get(i)[1]-1 >= 0 && cowPositions[grassIndexes.get(i)[0]][grassIndexes.get(i)[1]-1])
+                cowUniqueIDs.add(grassIndexes.get(i)[0] * numColumns + (grassIndexes.get(i)[1]-1));
+            if(grassIndexes.get(i)[1]+1 < numColumns && cowPositions[grassIndexes.get(i)[0]][grassIndexes.get(i)[1]+1])
+                cowUniqueIDs.add(grassIndexes.get(i)[0] * numColumns + (grassIndexes.get(i)[1]+1));
+            if(grassIndexes.get(i)[0]+1 < numRows && cowPositions[grassIndexes.get(i)[0]+1][grassIndexes.get(i)[1]])
+                cowUniqueIDs.add((grassIndexes.get(i)[0]+1) * numColumns + grassIndexes.get(i)[1]);
+
+            //checks if cows found are already pairs, if not, a pair of friends is counted for this grass square
+            if(cowUniqueIDs.size() >= 2)
+            {
+                boolean validPairFound = false;
+                for (int j = 0; j < cowUniqueIDs.size()-1; j++)
+                {
+                    for (int n = j + 1; n < cowUniqueIDs.size(); n++)
+                    {
+                        if (uniquePair[cowUniqueIDs.get(j)][cowUniqueIDs.get(n)])
+                        {
+                            numFriends++;
+                            validPairFound = true;
+                            uniquePair[cowUniqueIDs.get(j)][cowUniqueIDs.get(n)] = false;
+                            break;
+                        }
+                    }
+                    if (validPairFound)
+                        break;
+                }
+            }
+        }
+
+        //outputs data
+        System.out.println(numFriends);
+    }
+}
+

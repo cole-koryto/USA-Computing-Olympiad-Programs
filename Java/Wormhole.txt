@@ -1,0 +1,121 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: wormhole
+*/
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   AP CS
+LAST MODIFIED   :   11/19/19
+PROBLEM ID      :   Wormholes
+DESCRIPTION	:   In this problem I had to check for the
+                :   number of possible ways to get cow stuck
+                :   in a loop with portals.
+HELPED ME	:   USACO, Matt, Xavier
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class wormhole
+{
+    private static int[] pairs = new int[13];
+    private static int[][] portals = new int[13][2];
+    private static int[] cow = new int[13];
+    private static int numHoles;
+
+    //checks for cycles
+    public static boolean check()
+    {
+        for(int i = 1; i<=numHoles; i++)
+        {
+            int temp = i;
+
+            for(int j = 0; j< numHoles; j++)
+            {
+                temp = cow[pairs[temp]];
+            }
+            if(temp != 0)
+                return true;
+        }
+        return false;
+    }
+
+    //finds number of solutions
+    public static int solutions()
+    {
+        int i = 0;
+        int sum = 0;
+
+        for(i = 1; i<= numHoles; i++)
+        {
+            if(pairs[i] == 0)
+                break;
+        }
+
+        //checks if there is a cycle or not
+        if(i > numHoles)
+        {
+            if (check())
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        //counts all possible pairs
+        for(int j = i+1; j<=numHoles; j++)
+        {
+            if(pairs[j] == 0)
+            {
+                pairs[i]=j;
+                pairs[j]=i;
+                sum+=solutions();
+                pairs[i]=0;
+                pairs[j]=0;
+            }
+        }
+        return sum;
+    }
+
+    public static void main (String[] args) throws IOException
+    {
+        //declares variables
+        Scanner input = new Scanner(new FileReader("wormhole.in"));
+        numHoles = input.nextInt();
+
+        //inputs portal locations
+        for(int i = 1; i<=numHoles; i++)
+        {
+            portals[i][0] = input.nextInt();
+            portals[i][1] = input.nextInt();
+
+            pairs[i] = 0;
+            cow[i] = 0;
+        }
+
+        for(int i = 1; i<=numHoles; i++)
+        {
+
+            for(int j = 1; j<=numHoles; j++)
+            {
+                if(portals[j][0] > portals[i][0] && portals[i][1] == portals[j][1])
+                {
+                    if(cow[i] == 0 || portals[j][0]-portals[i][0] < portals[cow[i]][0] - portals[i][0])
+                    {
+                        cow[i] = j;
+                    }
+                }
+            }
+        }
+
+        //outputs the number of possible pairs
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("wormhole.out")));
+        output.println(solutions());
+        output.close();
+    }
+}

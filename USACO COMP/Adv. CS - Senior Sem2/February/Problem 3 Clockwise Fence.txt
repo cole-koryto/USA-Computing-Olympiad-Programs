@@ -1,0 +1,79 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   Adv. CS
+LAST MODIFIED   :   3/1/21
+PROBLEM ID      :   Clockwise Fence
+DESCRIPTION	:   In this problem I had to find out
+                :   if the given path went around
+                :   the given fence clockwise
+                :   or counterclockwise. 
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class Main
+{
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(System.in);
+
+        //variable declarations
+        int numStrings = input.nextInt();
+        String[] stringPaths = new String[numStrings];
+        for(int i = 0; i < numStrings; i++)
+            stringPaths[i] = input.next();
+        int currentX;
+        int currentY;
+
+        //calculates path points
+        for(int currentStringNum = 0; currentStringNum < numStrings; currentStringNum++)
+        {
+            currentX = 0;
+            currentY = 0;
+            int[] xValues = new int[stringPaths[currentStringNum].length()];
+            int[] yValues = new int[stringPaths[currentStringNum].length()];
+
+            for(int i = 0; i < stringPaths[currentStringNum].length(); i++)
+            {
+                //travels the path
+                switch (stringPaths[currentStringNum].charAt(i))
+                {
+                    case 'N':
+                        currentY++;
+                        break;
+
+                    case 'S':
+                        currentY--;
+                        break;
+
+                    case 'E':
+                        currentX++;
+                        break;
+
+                    case 'W':
+                        currentX--;
+                        break;
+                }
+
+                //stores point values
+                xValues[i] = currentX;
+                yValues[i] = currentY;
+            }
+
+            //calculates edges
+            int edgeSum = 0;
+            for(int i = 0; i < stringPaths[currentStringNum].length()-1; i++)
+                edgeSum += (xValues[i+1] - xValues[i])*(yValues[i+1] + yValues[i]);
+
+            //outputs result
+            if(edgeSum > 0)
+                System.out.println("CW");
+            else
+                System.out.println("CCW");
+        }
+    }
+}

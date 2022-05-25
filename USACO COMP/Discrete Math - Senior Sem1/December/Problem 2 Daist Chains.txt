@@ -1,0 +1,67 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   DM
+LAST MODIFIED   :   12/19/20
+PROBLEM ID      :   Do You Know Your ABCs?
+DESCRIPTION	:   In this problem I had to find the number
+                :   of pictures that had an average flower
+		:   based off of the number of petals each flower
+		:   had and which flowers each picture contained.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+public class Main
+{
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(System.in);
+
+        //variable declarations
+        int numPics = input.nextInt();
+        int sum;
+        int average;
+        int count = 0;
+        int tempCounter;
+        ArrayList<Integer> flowerPetalList = new ArrayList<Integer>();
+        for(int i = 0; i<numPics; i++)
+            flowerPetalList.add(input.nextInt());
+
+        //runs average calcultion for all pairs of flowers
+        for(int i = 0; i<numPics; i++)
+        {
+            for(int j = i; j<numPics; j++)
+            {
+                //finds average
+                tempCounter = 0;
+                sum = 0;
+                for(int n = i; n<=j; n++)
+                {
+                    sum += flowerPetalList.get(n);
+                    tempCounter++;
+                }
+                if(sum%tempCounter == 0)
+                {
+                    average = sum/tempCounter;
+
+                    //finds how many pics are the average
+                    for(int n = i; n<=j; n++)
+                    {
+                        if(flowerPetalList.get(n) == average)
+                        {
+                            count++;
+                            break;
+                         }
+                    }
+                }
+            }
+        }
+
+        //outputs result
+        System.out.println(count);
+    }
+}

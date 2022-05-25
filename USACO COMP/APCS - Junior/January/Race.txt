@@ -1,0 +1,65 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: race
+*/
+/*
+NAME	    :	Cole Koryto
+GROUP	    :	AP CS
+PROGRAM     :   Race
+CONTEST     :   Bronze
+DATE        :   1/18/20
+*/
+import java.io.*;
+import java.util.*;
+
+class race
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs requirements
+        Scanner input = new Scanner(new FileReader("race.in"));
+        int raceLength = input.nextInt();
+        int target = input.nextInt();
+        int minSeconds = raceLength;
+
+        //checks each speed increase
+        for(int i = 1; i< raceLength; i++)
+        {
+            int currentSpeed = 0;
+            int distanceTraveled = 0;
+            int counter = 0;
+            int stoppingDistance = 0;
+
+            //finds stopping distance
+            for(int j = 1; j< i-target+1; j++)
+            {
+                stoppingDistance += i-j;
+            }
+            stoppingDistance = raceLength-stoppingDistance;
+
+            //runs each race to find the most optimal
+            boolean stop = false;
+            while(distanceTraveled<raceLength)
+            {
+                if(distanceTraveled >= stoppingDistance)
+                    stop=true;
+                counter++;
+                if(currentSpeed == 0 || currentSpeed<i && !stop)
+                    currentSpeed++;
+                if(stop&&currentSpeed > 1)
+                    currentSpeed--;
+                distanceTraveled += currentSpeed;
+            }
+            if(currentSpeed == target && minSeconds > counter)
+            {
+                minSeconds = counter;
+            }
+        }
+
+        //outputs minimum time
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("race.out")));
+        output.println(minSeconds);
+        output.close();
+    }
+}

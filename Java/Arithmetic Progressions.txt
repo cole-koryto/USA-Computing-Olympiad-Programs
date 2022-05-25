@@ -1,0 +1,94 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: ariprog
+*/
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   AP CS
+LAST MODIFIED   :   2/4/20
+PROBLEM ID      :   Arithmetic Progressions
+DESCRIPTION	:   In this problem I had to find 
+                :   the sequences given a max length and a 
+                :   max number that were only composed of 
+                :   bisquares.
+HELPED ME	:   Xavier
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class ariprog
+{
+    public static void main(String[] args) throws IOException
+    {
+        //declares variables and inputs values
+        Scanner input = new Scanner(new FileReader("ariprog.in"));
+        Vector <Integer> aValues = new Vector<Integer>();
+        Vector <Integer> bValues = new Vector<Integer>();
+        int length = input.nextInt();
+        int upperBound = input.nextInt();
+
+        //makes boolean array of bisquares
+        int size = (int)(2*Math.pow(upperBound,2))+1;
+        boolean[] bisquares = new boolean[size+1];
+        for(int i = 0; i<size+1; i++)
+        {
+            bisquares[i] = false;
+        }
+        for(int i = 0; i<=upperBound;i++)
+        {
+            for(int j = 0; j<=upperBound; j++)
+            {
+                bisquares[(int)(Math.pow(i,2)+ Math.pow(j,2))] = true;
+            }
+        }
+
+        //checks through all sequences and sees if it's only bisquares
+        boolean fail = false;
+        for(int b = 1; b>0; b++)
+        {
+            if(2*b>size)
+                break;
+            for(int a = 0; a<=size-2; a++)
+            {
+                //breaks if the sequence is imposable
+                boolean pass = true;
+                if(a+b>=size)
+                    break;
+                if(a+(length-1)*b>size)
+                    break;
+
+                //checks if sequence is only bisquares
+                for(int n = 0; n<length; n++)
+                {
+                    if(!bisquares[a+n*b])
+                    {
+                        pass= false;
+                        break;
+                    }
+                }
+                if(pass)
+                {
+                    aValues.addElement(a);
+                    bValues.addElement(b);
+                }
+            }
+        }
+
+        //outputs the sequences that work
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("ariprog.out")));
+        if(aValues.size() == 0)
+        {
+            output.println("NONE");
+        }
+        else
+        for(int i =0 ;i< aValues.size(); i++)
+        {
+            output.println(aValues.elementAt(i) + " " + bValues.elementAt(i));
+            System.out.println(aValues.elementAt(i) + " " + bValues.elementAt(i));
+        }
+        output.close();
+    }
+}

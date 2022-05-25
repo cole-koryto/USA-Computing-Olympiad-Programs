@@ -1,0 +1,160 @@
+/*
+ID: colekor1
+TASK: palsquare
+LANG: JAVA
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED		:	3/30/20
+PROBLEM ID		:	palsquare
+DESCRIPTION		:	In this problem I had to input
+			:	a number that represented the number base
+			:	I was working with. Then I needed convert each number
+			:	from 1-300 (base 10) and its square from base 10 into
+			:	its correct base. After that I had to check if that
+			:	square in its new base was a palindrome,
+			:	if it was I outputted the number in
+			:	its new base and the palindromic square
+			:	in the right base.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class palsquare
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs stalls and declares variables
+        Scanner input = new Scanner(new FileReader("palsquare.in"));
+        int base;
+        int dividend;
+        int temp;
+        Vector<Integer> newNum = new Vector<Integer>();
+        Vector<Character> addedNum = new Vector<Character>();
+        Vector<Integer> addedPlaceNum = new Vector<Integer>();
+        int currentPlaceNum;
+        int dividendNumber;
+        int tempNumber;
+        Vector<Integer> newNumber = new Vector<Integer>();
+        Vector<Character> addedNumber = new Vector<Character>();
+        Vector<Integer> addedPlaceNumber = new Vector<Integer>();
+        int currentPlaceNumber;
+        int counter;
+        int check;
+        String letters = "ABCDEFGHIJK";
+        base = input.nextInt();
+        input.close();
+
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("palsquare.out")));
+        for (int i = 1; i <= 300; i++)
+        {
+            //converts square to proper base
+            dividend = (int) Math.pow(i, 2);
+            dividendNumber = i;
+            while (dividend != 0)
+            {
+                if (dividend%base > 9)
+                {
+                    addedNum.addElement(letters.charAt((dividend%base) - 10));
+                    newNum.addElement(addedNum.lastElement()-48);/////
+                    addedPlaceNum.addElement(newNum.size() - 1);
+                }
+                else
+                {
+                    newNum.addElement(dividend%base);
+                }
+                    dividend = dividend / base;
+                }
+
+                //converts number to proper base
+                while (dividendNumber != 0)
+                {
+                    if (dividendNumber%base > 9)
+                    {
+                        newNumber.addElement(-1);
+                        addedNumber.addElement(letters.charAt((dividendNumber%base) - 10));
+                        addedPlaceNumber.addElement(newNumber.size() - 1);
+                    }
+                    else
+                    {
+                        newNumber.addElement(dividendNumber%base);
+                    }
+
+                    dividendNumber = dividendNumber / base;
+                }
+                currentPlaceNum = 0;
+                currentPlaceNumber = addedPlaceNumber.size() -1 ;
+
+                //checks if palindrome
+                counter = newNum.size() - 1;
+                check = 1;
+                for (int j = 0; j < newNum.size() / 2; j++)
+                {
+                    if (!newNum.elementAt(j).equals(newNum.elementAt(counter)))
+                    {
+                        check = 0;
+                    }
+                    counter--;
+                }
+                if (check == 1)
+                {
+                    //outputs new number
+                    for (int j = newNumber.size() - 1; j >= 0; j--)
+                    {
+                        if (addedPlaceNumber.size() > 0)
+                        {
+                            if (addedPlaceNumber.elementAt(currentPlaceNumber) == j)
+                            {
+                                output.print(addedNumber.elementAt(currentPlaceNumber));
+                                currentPlaceNumber--;
+                            }
+                            else
+                            {
+                                output.print(newNumber.elementAt(j));
+                            }
+                        }
+                        else
+                        {
+                            output.print(newNumber.elementAt(j));
+                        }
+                    }
+                    output.print(" ");
+
+                    //outputs the square
+                    for (int j = 0; j < newNum.size(); j++)
+                    {
+                        if (addedPlaceNum.size() > 0)
+                        {
+                            if (currentPlaceNum < addedPlaceNum.size() && addedPlaceNum.elementAt(currentPlaceNum) == j)
+                            {
+                                output.print(addedNum.elementAt(currentPlaceNum));
+                                currentPlaceNum++;
+                            }
+                            else
+                            {
+                                output.print(newNum.elementAt(j));
+                            }
+                        }
+                        else
+                        {
+                            output.print(newNum.elementAt(j));
+                        }
+                    }
+                    output.println();
+                }
+
+                //clears all vectors for next run
+                newNum.clear();
+                addedNum.clear();
+                addedPlaceNum.clear();
+
+                newNumber.clear();
+                addedNumber.clear();
+                addedPlaceNumber.clear();
+            }
+            output.close();
+    }
+}

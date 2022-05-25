@@ -1,0 +1,54 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: fact4
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED		:	2/9/20
+PROBLEM ID		:	Factorial
+DESCRIPTION		:	In this problem I had to find a
+			:	a factorial given a starting number.
+			:	Then I had to find the last digit that
+			:	was not zero.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+
+class fact4
+{
+
+    public static void main(String[] args) throws IOException
+    {
+        //inputs starting value and declares variables
+        Scanner input = new Scanner(new FileReader("fact4.in"));
+        int start = input.nextInt();
+        BigInteger factorial = new BigInteger("1");
+        String fact;
+        char last = ' ';
+
+        //runs the factorial
+        for(int i = 1; i<=start; i++)
+            factorial = factorial.multiply(BigInteger.valueOf(i));
+
+        //finds last number
+        fact = "" + factorial;
+        for(int i = fact.length() -1; i>=0; i--)
+        {
+            if(fact.charAt(i)!= '0')
+            {
+                last = fact.charAt(i);
+                break;
+            }
+        }
+
+        //outputs the last number
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("fact4.out")));
+        output.println(last);
+        output.close();
+    }
+}

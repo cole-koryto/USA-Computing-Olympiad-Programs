@@ -1,0 +1,141 @@
+/*
+ID: colekor1
+TASK: beads
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	10th Computer Science.
+LAST MODIFIED		:	8/8/18
+PROBLEM ID		:	Broken Necklace
+DESCRIPTION		:	In this problem I had to find the largest
+			:	combined string of "a" and "b" that where
+			:	in sequence.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+	int NumBeads; // number of beads in the necklace
+	int BeadRows = 0; // largest string of red and blue beads
+	string Beads; // string containing the necklace
+						
+	ifstream input("beads.in"); //Input of data
+	input >> NumBeads;
+	input >> Beads;
+	input.close();
+
+	//Finding longest row
+	char First = Beads[0]; // the first bead in the color string
+	char TrueFirst = 'z'; // the fisrt colored bead in the necklace
+	int RowL = 0; // the current row length that is being counted
+	int ColorChange = 0; // the number of color changes in one BeadRows cycle
+	int Start = 0; // length of fisrt red and blue string
+	int BString = 0; // length of the first one color string
+
+	if (First != 'w') // checks if first bead is colored
+	{
+		TrueFirst = First;
+	}
+
+	for (int i = 0; i < NumBeads; i++)
+	{
+		if (Beads[i] == First || Beads[i] == 'w') // incresses RowL if the bead checked is the same as the first bead in color string
+		{
+			RowL++;
+		}
+		else // if a bead is not the same color as the first bead or is is not white this else will run
+		{
+			if (First == 'w')
+			{
+				RowL++;
+				First = Beads[i];
+				if (TrueFirst == 'z')
+				{
+					TrueFirst = Beads[i];
+				}
+			}
+			else // if the first bead is not white this else statement will run
+			{
+				ColorChange++;
+				if (ColorChange == 1)
+				{
+					if (BString == 0)
+					{
+						BString = RowL;
+
+					}
+					First = Beads[i];
+					RowL++;
+				}
+				if (ColorChange >= 2)
+				{
+					ColorChange = 0;
+					if (Start == 0)
+					{
+						Start = RowL;
+					}
+					if (RowL > BeadRows)
+					{
+						BeadRows = RowL;
+					}
+					RowL = 1; // set to one because the current bead that is being checked is part of the new string
+							 
+					First = Beads[i];
+				}
+			}
+		}
+	}
+	if (RowL > BeadRows) // dumps last RowL if big enough into BeadRows
+	{
+		BeadRows = RowL;
+	}
+	ColorChange = 0;
+	for (int i = NumBeads - 1; i >= 0; i--) //checks end of string for beads of same color to add to begining string
+	{
+		if (Beads[i] == TrueFirst || Beads[i] == 'w') 
+		{
+
+			Start++;
+			BString++;
+		}
+		else
+		{
+			ColorChange++;
+			if (ColorChange == 1)
+			{
+				if (Start > BeadRows)
+				{
+					BeadRows = Start;
+					Start = 0;
+				}
+				BString++;
+				TrueFirst = Beads[i];
+			}
+			if (ColorChange == 2)
+			{
+				if (BString > BeadRows)
+				{
+					if (BString > NumBeads)
+					{
+						BString = NumBeads;
+					}
+					BeadRows = BString;
+					BString = 0;
+				}
+				break;
+			}
+		}
+	}
+	//Output max row length
+	ofstream output("beads.out");
+	output << BeadRows << endl;
+	output.close();
+}

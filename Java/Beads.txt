@@ -1,0 +1,143 @@
+/*
+ID: colekor1
+TASK: beads
+LANG: JAVA
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED		:	1/8/20
+PROBLEM ID		:	Broken Necklace
+DESCRIPTION		:	In this problem I had to find the largest
+		    	:	combined string of "a" and "b" that where
+		    	:	in sequence.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class beads
+{
+    public static void main(String[] args) throws IOException
+    {
+        //declares variables and inputs data
+        int numBeads;
+        int beadRows = 0;
+        String beads;
+        Scanner input = new Scanner(new FileReader("beads.in"));
+        numBeads = input.nextInt();
+        beads = input.next();
+        input.close();
+        char first = beads.charAt(0);
+        char trueFirst = 'z';
+        int rowL = 0;
+        int colorChange = 0;
+        int start = 0;
+        int bString = 0;
+
+        //checks if first bead is colored
+        if (first != 'w')
+        {
+             trueFirst = first;
+        }
+
+        //finds longest combined string
+        for (int i = 0; i < numBeads; i++)
+        {
+            if (beads.charAt(i) == first || beads.charAt(i) == 'w')
+            {
+                rowL++;
+            }
+            else
+            {
+                //checks if bead is white
+                if (first == 'w')
+                {
+                    rowL++;
+                    first = beads.charAt(i);
+                    if ( trueFirst == 'z')
+                    {
+                         trueFirst = beads.charAt(i);
+                    }
+                }
+                else
+                {
+                    //breaks current string if needed
+                    colorChange++;
+                    if (colorChange == 1)
+                    {
+                        if (bString == 0)
+                        {
+                            bString = rowL;
+                        }
+                        first = beads.charAt(i);
+                        rowL++;
+                    }
+                    if (colorChange >= 2)
+                    {
+                        colorChange = 0;
+                        if (start == 0)
+                        {
+                            start = rowL;
+                        }
+                        if (rowL > beadRows)
+                        {
+                            beadRows = rowL;
+                        }
+                        rowL = 1;
+                        first = beads.charAt(i);
+                    }
+                }
+            }
+        }
+        if (rowL > beadRows)
+        {
+            beadRows = rowL;
+        }
+
+        //checks end of string for beads of same color to add to beginning string
+        colorChange = 0;
+        for (int i = numBeads - 1; i >= 0; i--)
+        {
+            if (beads.charAt(i) == trueFirst || beads.charAt(i) == 'w')
+            {
+                start++;
+                bString++;
+            }
+            else
+            {
+                //breaks current string if needed
+                colorChange++;
+                if (colorChange == 1)
+                {
+                    if (start > beadRows)
+                    {
+                        beadRows = start;
+                        start = 0;
+                    }
+                    bString++;
+                    trueFirst = beads.charAt(i);
+                }
+                if (colorChange == 2)
+                {
+                    if (bString > beadRows)
+                    {
+                        if (bString > numBeads)
+                        {
+                            bString = numBeads;
+                        }
+                        beadRows = bString;
+                        bString = 0;
+                    }
+                    break;
+                }
+            }
+        }
+
+        //outputs max row length
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("beads.out")));
+        output.println(beadRows);
+        output.close();
+    }
+}

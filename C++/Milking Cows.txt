@@ -1,0 +1,133 @@
+/*
+ID: colekor1
+TASK: milk2
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Krypton
+LAST MODIFIED	:	12/24/18
+PROBLEM ID		:	Milking Cows
+DESCRIPTION		:	In this problem I had to find the longest time 
+				:	where at least one cow was being milked and
+				:	the longest time where no cows were being milked
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+
+#include <iostream>
+#include <string> 
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+
+	int numFarmers;								
+	int vectorBuffer;							
+	vector<int> startTime;						
+	vector<int> endTime;						
+
+	vector<int> orderedStart;
+	vector<int> orderedEnd;
+
+	vector<int> beginMilk;
+	vector<int> endMilk;
+
+	ifstream input("milk2.in");
+	input >> numFarmers;
+
+	//Input of all times into vectors
+	for (int i = 0; i < numFarmers; i++)	
+	{
+		input >> vectorBuffer;
+		startTime.push_back(vectorBuffer);
+		orderedStart.push_back(vectorBuffer);
+		input >> vectorBuffer;
+		endTime.push_back(vectorBuffer);
+		orderedEnd.push_back(vectorBuffer);
+	}
+	input.close();
+
+	int switchStart;
+	int switchEnd;
+
+	//sorts times
+	for (int i = 0; i < numFarmers; i++)
+	{
+		for (int j = 0; j < numFarmers; j++)
+		{
+			if (j == 0)
+			{
+				j += i;
+			}
+			if (orderedStart[i] > orderedStart[j])
+			{
+				switchStart = orderedStart[i];
+				orderedStart[i] = orderedStart[j];
+				orderedStart[j] = switchStart;
+
+				switchEnd = orderedEnd[i];
+				orderedEnd[i] = orderedEnd[j];
+				orderedEnd[j] = switchEnd;
+			}
+
+		}
+	}
+
+	int first = orderedStart[0];
+	int endTemp = orderedEnd[0];
+	beginMilk.push_back(first);
+
+	int numMilkings = 0;
+	int longestMlik = 0;
+
+	int biggestGap = 0;
+	
+	//finds all groups of milkings
+	for (int i = 0; i < numFarmers - 1; i++)
+	{
+		if (orderedStart[i + 1] <= endTemp || orderedStart[i + 1] >= beginMilk[numMilkings] && orderedEnd[i+1] <= endTemp)
+		{
+			if (orderedEnd[i + 1] > endTemp)
+			{
+				endTemp = orderedEnd[i + 1];
+			}
+		}
+		else
+		{
+			numMilkings++;
+			endMilk.push_back(endTemp);
+			endTemp = orderedEnd[i + 1];
+
+			beginMilk.push_back(orderedStart[i + 1]);
+		}
+	}
+	endMilk.push_back(endTemp);
+	
+	//finds longest milking
+	for (int i = 0; i < beginMilk.size(); i++)
+	{
+		if (endMilk[i] - beginMilk[i] > longestMlik)
+		{
+			longestMlik = endMilk[i] - beginMilk[i];
+		}
+	}
+
+	//finds biggest gap in milking
+	for (int i = 0; i < beginMilk.size() - 1; i++)
+	{
+		if (beginMilk[i + 1] - endMilk[i] > biggestGap)
+		{
+			biggestGap = beginMilk[i + 1] - endMilk[i];
+		}
+	}
+
+	//Outputs data
+	ofstream output("milk2.out");
+	output << longestMlik << " " << biggestGap << endl;
+	output.close();
+
+}

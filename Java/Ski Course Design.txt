@@ -1,0 +1,72 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: skidesign
+*/
+/*
+NAME		    :	Cole Koryto
+GROUP		    :	AP CS
+LAST MODIFIED	    :	3/23/20
+PROBLEM ID	    :	Ski Course Design
+DESCRIPTION	    :	In this problem I found the 
+                    :   least expensive way to changes 
+             	    :   the ski hills by seeing which
+              	    :   range would work best for the
+              	    :   input that was given.
+HELPED ME	    :	USACO, Xavier
+HELPED		    :	None
+*/
+import java.io.*;
+import java.util.*;
+
+class skidesign
+{
+    public static void main(String[] args) throws IOException
+    {
+        //declares variables and inputs values
+        Scanner input = new Scanner(new FileReader("skidesign.in"));
+        int biggest = 0;
+        int bestCost = 2147483647;
+        int numHills = input.nextInt();
+        int[] hills = new int[1000];
+        for(int i = 0; i<numHills; i++)
+            hills[i] = input.nextInt();
+
+        //finds biggest hill
+        for(int i = 0; i < numHills; i++)
+            if(hills[i]>biggest)
+                biggest = hills[i];
+
+        //finds number of checks that needs to be made
+        int runSize = biggest - 16;
+        if(runSize<1)
+            runSize=1;
+
+        //finds the lowest cost possible
+        for(int i = 0; i < runSize; i++)
+        {
+            double totalCost = 0;
+            for(int j = 0; j<numHills;j++)
+            {
+                if(hills[j]<0+i)
+                {
+                    totalCost += Math.pow(((0+i)-hills[j]),2);
+                }
+                if(hills[j]>17+i)
+                {
+                    totalCost += Math.pow(((17+i)-hills[j]),2);
+                }
+            }
+            if(totalCost<bestCost)
+            {
+                System.out.println(totalCost + ":"+ (0+i) + ";"+ (17+i));
+                bestCost = (int) totalCost;
+            }
+        }
+
+        //outputs the number of combinations that work
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("skidesign.out")));
+        output.println(bestCost);
+        output.close();
+    }
+}

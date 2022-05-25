@@ -1,0 +1,198 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: castle
+*/
+/*
+NAME	        :	Cole Koryto
+GROUP	        :	AP CS
+LAST MODIFIED   :	10/31/19
+PROBLEM ID      :	The Castle
+DESCRIPTION	    :   This program finds the largest room in
+                :   a castle and the number of rooms in the castle.
+                :   it also finds the one wall to remove to make
+                :   the biggest room and the location of that wall.
+HELPED ME	    :	USACO, Freya, Xavier, Matt
+HELPED		    :	None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class castle
+{
+    private static String[][] marked = new String[60][60];
+    private static int roomSize = 0;
+    private static int roomNum = 0;
+    private static int[] roomSizeList = new int[2500];
+
+    public static void check (int i, int j, int[][] walls)
+    {
+        String roomWalls = convert(walls[i][j]);
+        marked[i][j] = Integer.toString(roomNum);
+        roomSize++;
+
+        //checks if there's a room west
+        if(roomWalls.charAt(3) == '0' && marked[i][j-1].equals("-1"))
+        {
+            check(i,j-1,walls);
+        }
+
+        //checks if there's a room north
+        if(roomWalls.charAt(2) == '0' && marked[i-1][j].equals("-1"))
+        {
+            check(i-1,j,walls);
+        }
+
+        //checks if there's a room east
+        if(roomWalls.charAt(1) == '0' && marked[i][j+1].equals("-1"))
+        {
+            check(i,j+1,walls);
+        }
+
+        //checks if there's a room south
+        if(roomWalls.charAt(0) == '0' && marked[i+1][j].equals("-1"))
+        {
+            check(i+1,j,walls);
+        }
+
+    }
+
+    public static String convert (int number)
+    {
+        String binary = Integer.toString(number, 2);
+        while(binary.length() <=3)
+        {
+            binary = "0" + binary;
+        }
+        return binary;
+    }
+
+    public static void main (String[] args) throws IOException
+    {
+        //declares variables
+        Scanner input = new Scanner(new FileReader("castle.in"));
+        int columns = input.nextInt();
+        int rows = input.nextInt();
+        int[][] walls = new int[rows][columns];
+        int largestRoom=0;
+        int largestCombine = 0;
+        int[] wallPosition = {rows-1, columns-1};
+        String wallDirection = "Error";
+
+        //inputs all of the wall data
+        for(int i =0; i<rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                walls[i][j] = input.nextInt();
+            }
+        }
+
+        //sets all of marked array to -1
+        for(int i =0; i<rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                marked[i][j] = "-1";
+            }
+        }
+
+        //checks if room is marked and if not visits that room
+        for(int i =0; i<rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if(marked[i][j].equals("-1"))
+                {
+                    check(i,j,walls);
+                    roomSizeList[roomNum] = roomSize;
+                    roomSize = 0;
+                    roomNum++;
+                }
+            }
+        }
+
+        //finds largest room
+        for(int i = 0; i< roomNum; i++)
+        {
+            if(roomSizeList[i] > largestRoom)
+            {
+                largestRoom = roomSizeList[i];
+            }
+        }
+
+        //finds what two rooms to combine
+        for(int i=rows-1; i>=0; i--)
+        {
+            for(int j =0 ;j<columns; j++)
+            {
+                //checks north
+                if(i != 0 && !marked[i][j].equals(marked[i-1][j]))
+                {
+                    if(roomSizeList[Integer.parseInt(marked[i][j])] + roomSizeList[Integer.parseInt(marked[i-1][j])] >= largestCombine)
+                    {
+                        if(roomSizeList[Integer.parseInt(marked[i][j])] + roomSizeList[Integer.parseInt(marked[i-1][j])] == largestCombine)
+                        {
+                            if(j < wallPosition[1] || j == wallPosition[1] && i > wallPosition[0])
+                            {
+                                wallPosition[0] = i;
+                                wallPosition[1] = j;
+                                wallDirection = "N";
+                            }
+                        }
+                        else
+                        {
+                            wallPosition[0] = i;
+                            wallPosition[1] = j;
+                            wallDirection = "N";
+                        }
+                        largestCombine = roomSizeList[Integer.parseInt(marked[i][j])] + roomSizeList[Integer.parseInt(marked[i-1][j])];
+                    }
+                }
+
+                //checks east
+                if(j != columns-1 && !marked[i][j].equals(marked[i][j + 1]))
+                {
+                    if(roomSizeList[Integer.parseInt(marked[i][j])] + roomSizeList[Integer.parseInt(marked[i][j+1])] >= largestCombine)
+                    {
+                        if(roomSizeList[Integer.parseInt(marked[i][j])] + roomSizeList[Integer.parseInt(marked[i][j+1])] == largestCombine)
+                        {
+                            if(j < wallPosition[1] || j == wallPosition[1] && i > wallPosition[0])
+                            {
+                                wallPosition[0] = i;
+                                wallPosition[1] = j;
+                                wallDirection = "E";
+                            }
+                        }
+                        else
+                        {
+                            wallPosition[0] = i;
+                            wallPosition[1] = j;
+                            wallDirection = "E";
+                        }
+                        largestCombine = roomSizeList[Integer.parseInt(marked[i][j])] + roomSizeList[Integer.parseInt(marked[i][j+1])];
+                    }
+                }
+            }
+        }
+
+        //shows walls
+        for(int i =0; i<rows; i++)
+        {
+            for(int j = 0; j<columns; j++)
+            {
+                System.out.print(marked[i][j] + "      ");
+            }
+            System.out.println();
+        }
+
+        //outputs the answer to each question
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("castle.out")));
+        output.println(roomNum);
+        output.println(largestRoom);
+        output.println(largestCombine);
+        output.println((wallPosition[0]+1) +" " + (wallPosition[1]+1)+ " " + wallDirection);
+        output.close();
+    }
+}

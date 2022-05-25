@@ -1,0 +1,63 @@
+/*
+ID: colekor1
+TASK: whereami
+LANG: JAVA
+*/
+/*
+NAME	    :	Cole Koryto
+GROUP	    :	AP CS
+PROGRAM     :   Where Am I?
+CONTEST     :   Bronze
+DATE        :   12/15/19
+*/
+
+import java.util.*;
+import java.io.*;
+
+class Main
+{
+    public static void main(String[] args) throws IOException
+    {
+        //declares variables and inputs mailboxes
+        Scanner input = new Scanner(new FileReader("whereami.in"));
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("whereami.out")));
+        int numBoxes = input.nextInt();
+        String mailboxes = input.next();
+        input.close();
+        boolean end = false;
+
+        //finds lowest unique sequence
+        if(numBoxes == 1)
+            output.println(numBoxes);
+        for(int i = 1; i<numBoxes; i++)
+        {
+            boolean fail = false;
+            for(int j = 0; j<numBoxes-(i-1); j++)
+            {
+                int count = 0;
+                String test = mailboxes.substring(j,j+i);
+                for(int n = 0; n<numBoxes-(i-1); n++)
+                {
+                    String check = mailboxes.substring(n,n+i);
+                    if(test.equals(check))
+                        count++;
+                    if(count>1)
+                    {
+                        fail = true;
+                        break;
+                    }
+                }
+            }
+            if(!fail)
+            {
+                output.println(i);
+                break;
+            }
+            if(i == numBoxes-1)
+            {
+                output.println(numBoxes);
+            }
+        }
+        output.close();
+    }
+}

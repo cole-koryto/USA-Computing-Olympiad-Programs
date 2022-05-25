@@ -1,0 +1,112 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: triangles
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED	:	1/8/20
+PROBLEM ID		:	Mother's MIlk
+DESCRIPTION		:	In this problem I had to
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class triangles
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs points and declares variables
+        Scanner input = new Scanner(new FileReader("triangles.in"));
+        int numPoints = input.nextInt();
+        int[] xPoint = new int[numPoints];
+        int[] yPoint = new int[numPoints];
+        double area = 0;
+        Vector<Double> possibleSides = new Vector<Double>();
+        Vector<Double> slopes = new Vector<Double>();
+        for(int i =0;i <numPoints;i++)
+        {
+            xPoint[i] = input.nextInt();
+            yPoint[i] = input.nextInt();
+        }
+        input.close();
+
+        //finds all the possible side lengths given the points
+        for(int i =0;i <numPoints-1;i++)
+        {
+            for (int j = i+1; j < numPoints; j++)
+            {
+                possibleSides.addElement(Math.sqrt(Math.pow(xPoint[j]-xPoint[i],2)+Math.pow(yPoint[j]-yPoint[i],2)));
+                possibleSides.addElement((double)((yPoint[j]-yPoint[i])/(xPoint[j]-xPoint[i])));
+            }
+        }
+
+        //runs through all the possible side lengths
+        for(int i =0;i <possibleSides.size();i++)
+        {
+            for(int j = 0;j <possibleSides.size();j++)
+            {
+                for(int n =0;n <possibleSides.size();n++)
+                {
+                    //sets the sides of the triangle
+                    double[] sides = new double[3];
+                    sides[0] = possibleSides.elementAt(i);
+                    sides[1] = possibleSides.elementAt(j);
+                    sides[2] = possibleSides.elementAt(n);
+
+                    //stops if any sides are repeated
+                    if(sides[0]==sides[1]||sides[0]==sides[2]||sides[1]== sides[2])
+                        break;
+
+                    //checks if sides are flat to axis
+                    boolean pass = false;
+                    if(slopes.elementAt(i) == 0)
+                        pass = true;
+                    if(slopes.elementAt(j) == 0)
+                        pass = true;
+                    if(slopes.elementAt(n) == 0)
+                        pass = true;
+                    if(!pass)
+                        break;
+
+                    //finds biggest side and orders the sides by largest
+                    for(int k =0; k<3;k++)
+                        for(int r= k; r<3;r++)
+                            if(sides[r]>sides[k])
+                            {
+                               double temp = sides[k];
+                               sides[k]=sides[r];
+                               sides[r] = temp;
+                            }
+
+                    //checks if it's a real triangle
+                    if(sides[0] >= sides[1]+sides[2])
+                        break;
+
+                    //checks if triangle is right
+                    if((int)Math.pow(sides[0],2) != (int)Math.pow(sides[1],2)+Math.pow(sides[2],2))
+                        break;
+
+                    //calculates area of right triangle
+                    double semi = .5*(sides[0]+sides[1]+sides[2]);
+
+                    double tempArea = 2*(Math.sqrt(semi*(semi-sides[0])*(semi-sides[1])*(semi-sides[2])));
+                    if(tempArea > area)
+                    {
+                        System.out.println(semi);
+                        System.out.println(sides[0] + " "+ sides[1]+ " "+ sides[2]);
+                        area = tempArea;
+                    }
+                }
+            }
+        }
+
+        //outputs the biggest area of the right triangle
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("triangles.out")));
+        output.println(Math.round(area));
+        output.close();
+    }
+}

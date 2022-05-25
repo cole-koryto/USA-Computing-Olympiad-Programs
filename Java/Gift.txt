@@ -1,0 +1,92 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: gift1
+*/
+/*
+NAME            :   Cole Koryto
+GROUP           :   AP CS
+LAST MODIFIED   :   9/30/19
+PROBLEM ID      :   Greedy Gift Givers
+DESCRIPTION     :   In this problem you are given groups
+		:   of people and an amount that will divided evenly
+		:   to the people who are in each group. My job
+		:   is to find how much money each person got.
+HELPED ME       :   USACO
+HELPED          :   None
+*/
+
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+class gift1
+{
+    public static void main(String[] args) throws IOException {
+        //declares variables
+        String curNameGive;
+        String curNameTake;
+        int money;
+        int divide;
+        int diviedMoney;
+        int numPeople;
+        int[] bank = { 0,0,0,0,0,0,0,0,0,0 };
+        Scanner input = new Scanner(new FileReader("gift1.in"));
+        numPeople = input.nextInt();
+        String[] names = new String[10];
+        for (int i = 0; i < numPeople; i++)
+        {
+            names[i] = input.next();
+        }
+
+        //gives gifts
+        for (int i = 0; i < numPeople; i++)
+        {
+            curNameGive = input.next();
+            money = input.nextInt();
+            divide = input.nextInt();
+            if (divide == 0)
+            {
+                diviedMoney = 0;
+            }
+            else
+            {
+                diviedMoney = money / divide;
+            }
+
+            //gives money to receiver
+            for (int j = 0; j < divide; j++)
+            {
+                curNameTake = input.next();
+                for (int b = 0; b < numPeople; b++)
+                {
+                    if (curNameTake.equals(names[b]))
+                    {
+                        bank[b] += diviedMoney;
+                    }
+                }
+            }
+
+            //takes money from giver
+            for (int j = 0; j < numPeople; j++)
+            {
+                if (curNameGive.equals(names[j]))
+                {
+                    bank[j] = bank[j] - money;
+                    if (divide != 0)
+                    {
+                        bank[j] += money%divide;
+                    }
+                }
+            }
+        }
+
+        //output info to file
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("gift1.out")));
+        for (int i = 0; i < numPeople; i++)
+        {
+            output.println(names[i] + " " + bank[i]);
+        }
+        output.close();
+    }
+}

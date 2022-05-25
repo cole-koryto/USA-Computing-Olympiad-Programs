@@ -1,0 +1,98 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: friday
+*/
+/*
+NAME		    :	Cole Koryto
+GROUP		    :	AP CS
+LAST MODIFIED	    :	10/14/19
+PROBLEM ID	    :	Friday the Thirteenth
+DESCRIPTION	    :	In this problem we need to find
+                    :	how many 13ths there are on each day
+                    :	over the course of N years.
+HELPED ME	    :	USACO
+HELPED		    :	None
+*/
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+class friday
+{
+    public static void main(String[] args) throws IOException
+    {
+        //input Years
+        int[] dayChange = { 3,3,0,3,2,3,2,3,3,2,3,2 };
+        int[] dayScore = { 0,0,0,0,0,0,0 };
+        int years;
+        int start = 1900;
+        Scanner input = new Scanner(new FileReader("friday.in"));
+        years = input.nextInt();
+
+        //find the 13ths
+        int day;
+        int moveDay = 3;
+
+        //start loop for year
+        for (int i = 0; i < years; i++)
+        {
+            if (start % 4 == 0 || start % 100 == 0)
+            {
+                if (start % 100 == 0)
+                {
+                    if (start % 400 == 0)
+                    {
+                        dayChange[2] = 1;
+                    }
+                    else
+                    {
+                        dayChange[2] = 0;
+                    }
+                }
+                else
+                {
+                    dayChange[2] = 1;
+                }
+            }
+            else
+            {
+                dayChange[2] = 0;
+            }
+
+            //start loop for month
+            for (int j = 0; j < 12; j++)
+            {
+                day = 0;
+                day = moveDay + dayChange[j];
+
+                if (day > 6)
+                {
+                    moveDay = day - 7;
+                }
+                else
+                {
+                    moveDay = day;
+                }
+                for (int w = 0; w < 7; w++)
+                {
+                    if (moveDay == w)
+                    {
+                        dayScore[w] = dayScore[w] + 1;
+                    }
+                }
+            }
+            start++;
+        }
+
+        //outputs the number of fridays
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("friday.out")));
+        output.print(dayScore[6] +  " ");
+        for (int i = 0; i < 5; i++)
+        {
+            output.print(dayScore[i] + " ");
+        }
+        output.println(dayScore[5]);
+        output.close();
+    }
+}

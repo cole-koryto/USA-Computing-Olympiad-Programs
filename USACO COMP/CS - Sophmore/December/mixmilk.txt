@@ -1,0 +1,64 @@
+/*
+ID: colekor1
+TASK: mixmilk
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	ifstream input("mixmilk.in");
+
+	int capacitys[3];
+	int milk[3];
+	int mainCounter = 0;
+	int offsetCounter = 1;
+
+	//inputs data
+	for (int i = 0; i < 3; i++)
+	{
+		input >> capacitys[i] >> milk[i];
+	}
+	input.close();
+
+	//finds milk amounts
+	for (int i = 0; i < 100; i++)
+	{
+
+		if (milk[mainCounter] + milk[offsetCounter] <= capacitys[offsetCounter])
+		{
+			milk[offsetCounter] += milk[mainCounter];
+			milk[mainCounter] = 0; 
+		}
+		else
+		{
+			milk[mainCounter] = (milk[mainCounter] + milk[offsetCounter]) - capacitys[offsetCounter];
+			milk[offsetCounter] = capacitys[offsetCounter];
+		}
+
+		//finds counter numbers
+		mainCounter += 1;
+		offsetCounter += 1;
+		if (mainCounter >= 3)
+		{
+			mainCounter =0;
+		}
+		if (offsetCounter >= 3)
+		{
+			offsetCounter = 0;
+		}
+
+	}
+
+	//output
+	ofstream output("mixmilk.out");
+
+	for (int i = 0; i < 3; i++)
+	{
+		output << milk[i] << endl;
+	}
+	output.close();
+}

@@ -1,0 +1,167 @@
+/*
+ID: colekor1
+TASK: palsquare
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Hex
+LAST MODIFIED		:	2/28/19
+PROBLEM ID		:	palsquare
+DESCRIPTION		:	In this problem I had to input
+			:	a number that represented the number base
+			:	I was working with. Then I needed convert each number 
+			:	from 1-300 (base 10) and its square from base 10 into 
+			:	its correct base. After that I had to check if that
+			:	square in its new base was a palindrome,
+			:	if it was I outputted the number in
+			:	its new base and the palindromic square 
+			:	in the right base.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+	int base;
+	int dividend;
+	int temp;
+	vector <int> newNum;
+	vector <char> addedNum;
+	vector <int> addedPlaceNum;
+	int currentPlaceNum;
+
+	int dividendNumber;
+	int tempNumber;
+	vector <int> newNumber;
+	vector <char> addedNumber;
+	vector <int> addedPlaceNumber;
+	int currentPlaceNumber;
+
+	int counter;
+	int check;
+	string letters = "ABCDEFGHIJK";
+
+	ifstream input("palsquare.in");
+	input >> base;
+	input.close();
+
+	ofstream output("palsquare.out");
+
+	for (int i = 1; i <= 300; i++)
+	{
+		//converts square to proper base
+		dividend = pow(i, 2);
+		dividendNumber = i;
+		while (dividend != 0)
+		{
+			if (dividend%base > 9)
+			{
+				addedNum.push_back(letters[(dividend%base) - 10]);
+				newNum.push_back(addedNum.back());
+				addedPlaceNum.push_back(newNum.size() - 1);
+			}
+			else
+			{
+				newNum.push_back(dividend%base);
+			}
+			dividend = dividend / base;
+		}
+
+		//converts number to proper base
+		while (dividendNumber != 0)
+		{
+			if (dividendNumber%base > 9)
+			{
+				newNumber.push_back(-1);
+				addedNumber.push_back(letters[(dividendNumber%base) - 10]);
+				addedPlaceNumber.push_back(newNumber.size() - 1);
+			}
+			else
+			{
+				newNumber.push_back(dividendNumber%base);
+			}
+
+			dividendNumber = dividendNumber / base;
+		}
+		currentPlaceNum = 0;
+		currentPlaceNumber = addedPlaceNumber.size() -1 ;
+
+		//checks if palindrome
+		counter = newNum.size() - 1;
+		check = 1;
+		for (int j = 0; j < newNum.size() / 2; j++)
+		{
+			if (newNum[j] != newNum[counter])
+			{
+				check = 0;
+			}
+			counter--;
+		}
+		if (check == 1)
+		{
+			//outputs new number
+			for (int j = newNumber.size() - 1; j >= 0; j--)
+			{
+				if (addedPlaceNumber.size() > 0)
+				{
+					if (addedPlaceNumber[currentPlaceNumber] == j)
+					{
+						output << addedNumber[currentPlaceNumber];
+						currentPlaceNumber--;
+					}
+					else
+					{
+						output << newNumber[j];
+					}
+				}
+				else
+				{
+					output << newNumber[j];
+				}
+			}
+		output << " ";
+
+		//outputs the square
+		for (int j = 0; j < newNum.size(); j++)
+		{
+			if (addedPlaceNum.size() > 0)
+			{
+				if (addedPlaceNum[currentPlaceNum] == j)
+				{
+					output << addedNum[currentPlaceNum];
+					currentPlaceNum++;
+				}
+				else
+				{
+					output << newNum[j];
+				}
+			}
+			else
+			{
+				output << newNum[j];
+			}
+		}
+		output << endl;
+		}
+
+		//clears all vectors for next run
+		newNum.clear();
+		addedNum.clear();
+		addedPlaceNum.clear();
+
+		newNumber.clear();
+		addedNumber.clear();
+		addedPlaceNumber.clear();
+	}
+	output.close();
+
+	//exit program
+	return 0;
+}

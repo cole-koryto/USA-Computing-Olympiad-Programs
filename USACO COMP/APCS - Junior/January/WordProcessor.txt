@@ -1,0 +1,50 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: word
+*/
+/*
+NAME	    :	Cole Koryto
+GROUP	    :	AP CS
+PROGRAM     :   Word Processor
+CONTEST     :   Bronze
+DATE        :   1/18/20
+*/
+import java.io.*;
+import java.util.*;
+
+class word
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs requirements and words
+        Scanner input = new Scanner(new FileReader("word.in"));
+        int numWords = input.nextInt();
+        int maxWords = input.nextInt();
+        String[] words = new String[100];
+        for(int i = 0; i<numWords; i++)
+            words[i] = input.next();
+
+        //formats the words with the requirements and outputs them
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("word.out")));
+        int counter = 0;
+        for(int i = 0; i < numWords; i++)
+        {
+            if(words[i].length()+counter > maxWords)
+            {
+                output.println();
+                output.print(words[i]);
+                counter = words[i].length();
+            }
+            else
+            {
+                if(i!=0)
+                output.print(" ");
+                output.print(words[i]);
+                counter += words[i].length();
+
+            }
+        }
+        output.close();
+    }
+}

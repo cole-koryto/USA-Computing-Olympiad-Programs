@@ -1,0 +1,302 @@
+/*
+ID: colekor1
+TASK: transform
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED		:	3/20/20
+PROBLEM ID		:	Transform
+DESCRIPTION		:	In this problem, I had to see which transformation
+			:	would match the new square that was given to me
+			:	to the original.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	int size;
+	char square[10][10];
+	char transform[10][10];
+	char reflect[10][10];
+
+	ifstream input("transform.in");
+	input >> size;
+
+	//inputs square
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			input >> square[i][j];
+			reflect[i][j] = square[i][j];
+		}
+	}
+
+	//intputs transform
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			input >> transform[i][j];
+		}
+	}
+
+	int result = -1;
+	int current = -1;
+	int row;
+	int column;
+
+	//creates reflected square
+	char temp;
+	for (int j = 0; j < size / 2; j++)
+	{
+		for (int n = 0; n < size; n++)
+		{
+			temp = reflect[n][j];
+			reflect[n][j] = square[n][(size - 1) - j];
+			reflect[n][(size - 1) - j] = temp;
+		}
+	}
+
+	//checks for correct transformation
+	for (int i = 0; i < 6; i++)
+	{
+		//90 rotation
+		if (i == 0)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				row = size - 1;
+				for (int n = 0; n < size; n++)
+				{
+					if (transform[j][n] == square[row][j])
+					{
+						current = 1;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+					row = row -1;
+				}
+			}
+				result = current;
+		}
+		if (result != -1)
+		{
+			break;
+		}
+
+		//preforms 180 rotation
+		if (i == 1)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				column = size - 1;
+				row = (size - 1) - j;
+				for (int n = 0; n < size; n++)
+				{
+					if (transform[j][n] == square[row][column])
+					{
+						current = 2;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+					column = column - 1;
+				}
+			}
+			result = current;
+		}
+		if (result != -1)
+		{
+			break;
+		}
+
+		//preforms 270 rotation
+		if (i == 2)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				column = (size - 1)-j;
+				row = 0;
+				for (int n = 0; n < size; n++)
+				{
+					if (transform[j][n] == square[row][column])
+					{
+						current = 3;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+					row = row + 1;
+				}
+			}
+			result = current;
+		}
+		if (result != -1)
+		{
+			break;
+		}
+
+		//preforms a reflection
+		if (i == 3)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				for (int n = 0; n < size; n++)
+				{
+					if (transform[j][n] == reflect[j][n])
+					{
+						current = 4;
+					}
+					else
+					{
+						cout << j << " " << n;
+						current = -1;
+						n = size;
+						j = size;
+					}
+				}
+			}
+			result = current;
+		}
+		if (result != -1)
+		{
+			break;
+		}
+
+		//combination of a few transformations
+		if (i == 4)
+		{
+			//90 rotation
+			for (int j = 0; j < size; j++)
+			{
+				row = size - 1;
+				for (int n = 0; n < size; n++)
+				{
+					if (reflect[j][n] == transform[row][j])
+					{
+						current = 5;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+					row = row - 1;
+				}
+			}
+			result = current;
+			if (result != -1)
+			{
+				
+				break;
+			}
+
+			//180 rotation
+			for (int j = 0; j < size; j++)
+			{
+				column = size - 1;
+				row = (size - 1) - j;
+				for (int n = 0; n < size; n++)
+				{
+					if (reflect[j][n] == transform[row][column])
+					{
+						current = 5;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+					column = column - 1;
+				}
+			}
+			result = current;
+			if (result != -1)
+			{
+				
+				break;
+			}
+
+			//270 rotation
+			for (int j = 0; j < size; j++)
+			{
+				column = (size - 1) - j;
+				row = 0;
+				for (int n = 0; n < size; n++)
+				{
+					if (reflect[j][n] == transform[row][column])
+					{
+						current = 5;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+					row = row + 1;
+				}
+			}
+			result = current;
+		}
+		if (result != -1)
+		{
+			
+			break;
+		}
+
+		//no change
+		if (i == 5)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				for (int n = 0; n < size; n++)
+				{
+					if (transform[j][n] == square[j][n])
+					{
+						current = 6;
+					}
+					else
+					{
+						current = -1;
+						n = size;
+						j = size;
+					}
+				}
+			}
+		}
+	}
+
+	//checks if it's invalid
+	if (result == -1)
+	{
+		result = 7;
+	}
+
+	//outputs result
+	ofstream output("transform.out");
+	output << result << endl;
+
+	//exit program
+	return 0;
+}

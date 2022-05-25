@@ -1,0 +1,71 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   Adv. CS
+LAST MODIFIED   :   4/4/21
+PROBLEM ID      :   Problem 3 Acowdemia I
+DESCRIPTION	:   In this problem I had input a list of papers
+                :   and their citation information then 
+                :   find the paper that had the largest h-index
+                :   based off of some predetermined rules.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.util.*;
+
+class Main
+{
+    public static void main(String[] args)
+    {
+        //declares variables and sets up input
+        Scanner input = new Scanner(System.in);
+        int numPapers = input.nextInt();
+        int maxCitations = input.nextInt();
+        int[] paperStats = new int[numPapers];
+        for(int i = 0;  i < numPapers; i++)
+            paperStats[i] = input.nextInt();
+        Arrays.sort(paperStats);
+        input.close();
+        int previousPaperStats = -1;
+
+        //starts at most cited paper and tries to find the biggest possible h-index
+        for(int i = numPapers-1; i >= 0; i--)
+        {
+            int viablePapers = 1;
+
+            //checks if there are enough papers to this make h-index
+            if(numPapers >= paperStats[i] && previousPaperStats != paperStats[i])
+            {
+                //counts viable papers with less citations
+                int totalCitationsNeeded = 0;
+                if(i-1 >= 0)
+                {
+                    for(int j = i - 1; j >= i-(paperStats[i]-1); j--)
+                    {
+                        totalCitationsNeeded += paperStats[i] - paperStats[j];
+                        if(totalCitationsNeeded > maxCitations)
+                        {
+                            viablePapers += i-(j+1);
+                            break;
+                        }
+                        else if(j == 0)
+                        {
+                            viablePapers += i-j;
+                            break;
+                        }
+                    }
+                }
+                //counts viable papers with more citations
+                viablePapers += (numPapers-1)-i;
+
+                //outputs h-index if possible
+                if(viablePapers >= paperStats[i])
+                {
+                    System.out.println(paperStats[i]);
+                    break;
+                }
+            }
+            previousPaperStats = paperStats[i];
+        }
+    }
+}

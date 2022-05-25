@@ -1,0 +1,40 @@
+"""
+ID: your_id_here
+LANG: PYTHON3
+TASK: ride
+"""
+"""
+NAME		    :	Cole Koryto
+GROUP		    :	Adv. CS
+LAST MODIFIED	    :	3/16/21
+PROBLEM ID	    :	Your Ride is Here
+DESCRIPTION	    :	In this program I had to read in two group 
+		    :	names converted group names in to numbers and 
+		    :	match the groups up based on the mod of 
+		    :   each groups numbers.	
+HELPED ME	    :	USACO
+HELPED		    :	None
+"""
+
+# declares variables and opens files
+fin = open('ride.in', 'r')
+fout = open('ride.out', 'w')
+groupName = fin.readline()
+cometName = fin.readline()
+groupName = groupName.replace("\n", "")
+cometName = cometName.replace("\n", "")
+
+# calculates value of first product
+product1 = 1
+for i in range(len(groupName)):
+    product1 *= ord(groupName[i])-64
+# calculates value of second product
+product2 = 1
+for i in range(len(cometName)):
+    product2 *= ord(cometName[i])-64
+
+# checks the products mods and outputs result
+if(product1%47 == product2%47):
+    fout.write("GO\n")
+else:
+    fout.write("STAY\n")

@@ -1,0 +1,123 @@
+ /*
+ID:   colekor1
+TASK: barn1
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Summer USACO
+LAST MODIFIED		:	7/16/19
+PROBLEM ID		:	Barn Repair
+DESCRIPTION		:	In this problem I had to find how to put a given 
+			:	number of boards over a set of occupied stalls
+			:	then output the total length of all the boards.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	//initializes variables
+	int max, numStalls, numCows;
+	int occStalls[200];
+	int boardStart[200];
+	int boardEnd[200];
+	int total = 0;
+	int distance = 0;
+
+	//inputs variables
+	ifstream input("barn1.in");
+	input >> max;
+	input >> numStalls;
+	input >> numCows;
+	int usedBoards = numCows;
+
+	//reads in the occupied stalls
+	for (int i = 0; i < numCows; i++)
+	{
+		input >> occStalls[i];
+		boardStart[i] = occStalls[i];
+		boardEnd[i] = occStalls[i];
+	}
+	
+	//orders stalls
+	int temp;
+	for (int i = 0; i < numCows; i++)
+	{
+		for (int j = i; j < numCows; j++)
+		{
+			if (occStalls[i] > occStalls[j])
+			{
+				temp = occStalls[i];
+				occStalls[i] = occStalls[j];
+				occStalls[j] = temp;
+			}
+		}
+	}
+
+	//puts a board over every stall to start
+	for (int i = 0; i < numCows; i++)
+	{
+		boardStart[i] = occStalls[i];
+		boardEnd[i] = occStalls[i];
+	}
+
+	//finds the length of each board used
+	while (usedBoards > max)
+	{
+		distance++;
+		//checks if boards can be conneceted
+		for (int j = 0; j < usedBoards-1; j++)
+		{
+			if (boardEnd[j] + distance == boardStart[j + 1])
+			{
+				boardEnd[j] = boardEnd[j + 1];
+		
+				//moves all boards over
+				for (int i = j + 1; i < usedBoards; i++)
+				{
+					if (i == j + 1)
+					{
+						boardStart[i] = 0;
+						boardEnd[i] = 0;
+					}
+					else
+					{
+						boardStart[i - 1] = boardStart[i];
+						boardEnd[i - 1] = boardEnd[i];
+					}
+					if (i == usedBoards - 1)
+					{
+						boardStart[i] = -1;
+						boardEnd[i] = -1;
+					}
+				}
+				usedBoards--;
+				j--;
+			}
+			if (usedBoards <= max) 
+			{
+				break;
+			}
+		}
+	}
+	input.close();
+
+	//finds total of stalls occupied
+	for (int i = 0; i < usedBoards; i++)
+	{
+		total += boardEnd[i] - boardStart[i] + 1;
+	}
+
+	//outputs total
+	ofstream output("barn1.out");
+	output << total << endl;
+	output.close();
+
+	//exit program
+	return 0;
+}

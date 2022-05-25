@@ -1,0 +1,151 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: combo
+*/
+/*
+NAME		:	Cole Koryto
+GROUP		:	AP CS
+LAST MODIFIED	:	3/30/20
+PROBLEM ID	:	Combination Lock
+DESCRIPTION	:	In this problem I found all the solutions
+                :  	that would work for the given lock then
+                :  	I found which combinations repeated from
+                :   	the master lock and the set lock and did 
+                :  	not add those to the total.
+HELPED ME	:	USACO
+HELPED		:	None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class combo
+{
+    public static void main(String[] args) throws IOException
+    {
+        //declares variables and inputs values
+        Scanner input = new Scanner(new FileReader("combo.in"));
+        int total = 0;
+        int max = input.nextInt();
+        int[] comb1 = new int[3];
+        int[] comb2 = new int[3];
+        int[] success = new int[1000];
+        int[][] store1 = new int[10000][3];
+        int[][] store2 = new int[10000][3];
+        for(int i = 0; i<3; i++)
+        {
+            comb1[i] = input.nextInt();
+        }
+        for(int i = 0; i<3; i++)
+        {
+            comb2[i] = input.nextInt();
+        }
+        input.close();
+
+        //makes all combinations
+        int count = 0;
+        for(int i = -2; i<3; i++)
+        {
+            for(int j = -2; j<3; j++)
+            {
+                for(int n = -2; n<3; n++)
+                {
+		    //adds new combo to arrays
+                    store1[count][0] = comb1[0]+i;
+                    store1[count][1]= comb1[1]+j;
+                    store1[count][2]= comb1[2]+n;
+                    store2[count][0]  = comb2[0]+i;
+                    store2[count][1] = comb2[1]+j;
+                    store2[count][2] = comb2[2]+n;
+
+		    //checks if there is a negative or over max
+                    for(int k=0 ;k< 3; k++)
+                    {
+                        if(store1[count][k]<1)
+                        {
+                            store1[count][k] = max + store1[count][k];
+                        }
+                    }
+                    for(int k=0 ;k< 3; k++)
+                    {
+                        if(store2[count][k]<1)
+                            store2[count][k] = max + store2[count][k];
+                    }
+                    for(int k=0 ;k< 3; k++)
+                    {
+                        if(store1[count][k]>max)
+                            store1[count][k] = store1[count][k]%max;
+                    }
+                    for(int k=0 ;k< 3; k++)
+                    {
+                        if(store2[count][k]>max)
+                            store2[count][k] = store2[count][k]%max;
+                    }
+
+		    //checks to make sure no numbers are zero
+                    for(int k=0 ;k< 3; k++)
+                    {
+                        if(store1[count][k]==0)
+                        {
+                            store1[count][k] = max;
+                        }
+                    }
+                    for(int k=0 ;k< 3; k++)
+                    {
+                        if(store2[count][k]==0)
+                            store2[count][k] = max;
+                    }
+                    count++;
+                }
+            }
+        }
+
+        //counts total by finding the codes that don't repeat
+        for(int i = 0; i< count*2; i++)
+        {
+            success[i] = 0;
+        }
+        int numSuccess = 0;
+        for(int i = 0; i< count; i++)
+        {
+            boolean pass1 = true;
+            for(int j = 0; j<numSuccess; j++)
+            {
+                if (Integer.parseInt(store1[i][0] + "" +  store1[i][1] + "" + store1[i][2]) == success[j])
+                {
+                    pass1 = false;
+                    break;
+                }
+            }
+            if(pass1)
+            {
+                success[numSuccess] = Integer.parseInt(store1[i][0] + "" +  store1[i][1] + "" + store1[i][2]);
+                numSuccess++;
+            }
+        }
+        for(int i = 0; i< count; i++)
+        {
+            boolean pass2 = true;
+            for(int j = 0; j<numSuccess; j++)
+            {
+                if (Integer.parseInt(store2[i][0] + "" +  store2[i][1] + "" + store2[i][2]) == success[j])
+                {
+                    pass2 = false;
+                    break;
+                }
+            }
+            if(pass2)
+            {
+                success[numSuccess] = Integer.parseInt(store2[i][0] + "" +  store2[i][1] + "" + store2[i][2]);
+                numSuccess++;
+            }
+        }
+        
+        //outputs the number of combinations that work
+        total = numSuccess;
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("combo.out")));
+        output.println(total);
+        output.close();
+    }
+}

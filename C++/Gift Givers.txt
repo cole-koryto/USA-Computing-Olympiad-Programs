@@ -1,0 +1,97 @@
+/*
+ID: colekor1
+TASK: gift1
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Krypton
+LAST MODIFIED		:	1/17/19
+PROBLEM ID		:	Greedy Gift Givers
+DESCRIPTION		:	In this problem you are given groups
+			:	of people and an amount that will divided evenly
+			:	to the people who are in each group. My job
+			:	is to find how much money each person got.
+HELPED ME		:	USACO, Jack Scheffel
+HELPED			:	Jack Scheffel
+*/
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	//reads in names
+	int numPeople;
+	int bank[10] = { 0,0,0,0,0,0,0,0,0,0 };
+	ifstream input("gift1.in");
+	input >> numPeople;
+	string names[10];
+	for (int i = 0; i < numPeople; i++)
+	{
+		input >> names[i];
+	}
+
+	//gives gifts
+	string curNameGive;
+	string curNameTake;
+	int money;
+	int divide;
+	int diviedMoney;
+
+	for (int i = 0; i < numPeople; i++)
+	{
+		input >> curNameGive;
+		input >> money;
+		input >> divide;
+		diviedMoney = money / divide;
+
+		if (divide == 0)
+		{
+			diviedMoney = 0;
+		}
+
+		//gives money to receiver
+		for (int j = 0; j < divide; j++)
+		{
+			input >> curNameTake;
+			for (int b = 0; b < numPeople; b++)
+			{
+				if (curNameTake == names[b])
+				{
+					bank[b] += diviedMoney;
+				}
+			}
+		}
+
+		//takes money from giver
+		for (int j = 0; j < numPeople; j++)
+		{
+			if (curNameGive == names[j])
+			{
+				bank[j] = bank[j] - money;
+				if (divide != 0)
+				{
+					bank[j] += money%divide;
+				}
+			}
+		}
+	}
+	input.close();
+
+	//output info to file
+	ofstream output("gift1.out");
+	for (int i = 0; i < numPeople; i++)
+	{
+		output << names[i] << " " << bank[i] << endl;
+	}
+	output.close();
+
+	//exit program
+	return 0;
+}
+
+
+

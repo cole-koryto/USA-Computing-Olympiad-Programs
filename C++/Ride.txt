@@ -1,0 +1,81 @@
+/*
+ID: colekor1
+TASK: ride
+LANG: C++
+*/
+/*
+NAME		:	Cole Koryto
+GROUP		:	9th Grade I.T.
+LAST MODIFIED	:	1/11/18
+PROBLEM ID	:	Your Ride is Here
+DESCRIPTION	:	Read in two group names converted group names
+		:	in to numbers and match the groups up based
+		:	on the mod of each groups numbers.	
+HELPED ME	:	USACO, Mr. C
+HELPED		:	Anna K. Alex Conway
+*/
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+int main() 
+{
+
+	char Alphabet[26] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' };
+	string Inputs[2];
+	int Answer[6][2];
+
+	// Gets inputs from files
+	ifstream input("ride.in");
+	for (int i = 0; i < 2; i++)
+	{
+		getline(input, Inputs[i]);
+	}
+	input.close();
+
+	//Converting string to numbers
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < Inputs[i].size(); j++)
+		{
+			for (int w = 0; w < 26; w++)
+			{
+				if (Inputs[i].at(j) == Alphabet[w])
+				{
+					Answer[j][i] = w + 1;
+				}
+			}
+		}
+	}
+
+	//Find product of all numbers in converted string
+	int final[2];
+	for (int i = 0; i < 2; i++)
+	{
+		int temp = 1;
+		for (int j = 0; j < Inputs[i].size(); j++)
+		{
+			temp = temp * Answer[j][i];
+		}
+		final[i] = temp % 47;
+	}
+
+	//Output to file
+	ofstream file("ride.out");
+		if (final[0] == final[1]) 
+		{
+			file << "GO" << endl;
+		}
+		else
+		{
+			file << "STAY" << endl;
+		}
+	file.close();
+}
+
+
+
+
+

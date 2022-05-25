@@ -1,0 +1,183 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: milk3
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED		:	5/5/20
+PROBLEM ID		:	Mother's MIlk
+DESCRIPTION		:	In this problem I had to find all the
+              		:       possible values of bucket C when bucket
+               		:       A is completely empty and when only doing
+               		:       complete pours from each bucket.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class milk3
+{
+    static Vector <Integer> levelOfLast = new Vector<Integer>();
+    static boolean[][] checked = new boolean[21][21];
+    static int capacity1;
+    static int capacity2;
+    static int capacity3;
+    public static void milkPaths(int milk1, int milk2, int milk3, int bucket)
+    {
+        //defines all the milk levels for this run
+        int addTo1 = capacity1-milk1, addTo2 = capacity2-milk2, addTo3 = capacity3-milk3;
+        int add;
+        int level1 = milk1, level2 = milk2, level3 = milk3;
+
+        //tests all swaps given the current milk levels
+
+        //bucket 1 to bucket 2
+        level1 = milk1;
+        level2 = milk2;
+        level3 = milk3;
+        add = addTo2;
+        if(addTo2>milk1)
+            add=milk1;
+        level1 = milk1-add;
+        level2 = milk2+add;
+        if(!checked[level1][level2])
+        {
+            if(level1 == 0)
+                levelOfLast.addElement(level3);
+            checked[level1][level2] = true;
+            milkPaths(level1,level2,level3,2);
+        }
+
+        //bucket 1 to bucket 3
+        level1 = milk1;
+        level2 = milk2;
+        level3 = milk3;
+        add = addTo3;
+        if(addTo3>milk1)
+            add=milk1;
+        level1 = milk1-add;
+        level3 = milk3+add;
+        if(!checked[level1][level2])
+        {
+            if(level1 == 0)
+                levelOfLast.addElement(level3);
+            checked[level1][level2] = true;
+            milkPaths(level1,level2,level3,2);
+        }
+
+        //bucket 2 to bucket 1
+        level1 = milk1;
+        level2 = milk2;
+        level3 = milk3;
+        add = addTo1;
+        if(addTo1>milk2)
+            add=milk2;
+        level2 = milk2-add;
+        level1 = milk1+add;
+        if(!checked[level1][level2])
+        {
+            if(level1 == 0)
+                levelOfLast.addElement(level3);
+            checked[level1][level2] = true;
+            milkPaths(level1,level2,level3,2);
+        }
+
+        //bucket 2 to bucket 3
+        level1 = milk1;
+        level2 = milk2;
+        level3 = milk3;
+        add = addTo3;
+        if(addTo3>milk2)
+            add=milk2;
+        level2 = milk2-add;
+        level3 = milk3+add;
+        if(!checked[level1][level2])
+        {
+            if(level1 == 0)
+                levelOfLast.addElement(level3);
+            checked[level1][level2] = true;
+            milkPaths(level1,level2,level3,2);
+        }
+
+        //bucket 3 to bucket 1
+        level1 = milk1;
+        level2 = milk2;
+        level3 = milk3;
+        add = addTo1;
+        System.out.println(addTo1);
+        if(addTo1>milk3)
+            add=milk3;
+        level3 = milk3-add;
+        level1 = milk1+add;
+        if(!checked[level1][level2])
+        {
+            if(level1 == 0)
+                levelOfLast.addElement(level3);
+            checked[level1][level2] = true;
+            milkPaths(level1,level2,level3,2);
+        }
+
+        //bucket 3 to bucket 2
+        level1 = milk1;
+        level2 = milk2;
+        level3 = milk3;
+        add = addTo2;
+        if(addTo2>milk3)
+            add=milk3;
+        level3 = milk3-add;
+        level2 = milk2+add;
+        if(!checked[level1][level2])
+        {
+            if(level1 == 0)
+                levelOfLast.addElement(level3);
+            checked[level1][level2] = true;
+            milkPaths(level1,level2,level3,2);
+        }
+    }
+
+    public static void main(String[] args) throws IOException
+    {
+        //inputs capacities and declares variables
+        Scanner input = new Scanner(new FileReader("milk3.in"));
+        int cap1 = input.nextInt(), cap2 = input.nextInt(), cap3 = input.nextInt();
+        capacity1 = cap1;
+        capacity2 = cap2;
+        capacity3 = cap3;
+        int onBucket = 3;
+        for (int i = 0; i < 21; i++)
+            for (int j = 0; j < 21; j++)
+                checked[i][j] = false;
+
+        //finds all possible levels of the last bucket
+        checked[0][0] = true;
+        milkPaths(0, 0, cap3, onBucket);
+        levelOfLast.addElement(capacity3);
+
+        //outputs all the possible levels of the last bucket
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("milk3.out")));
+        Collections.sort(levelOfLast);
+        boolean[] outputCheck = new boolean[21];
+        for (int i = 0; i < levelOfLast.size()-1; i++)
+        {
+            if (!outputCheck[levelOfLast.elementAt(i)])
+            {
+                output.print(levelOfLast.elementAt(i));
+                outputCheck[levelOfLast.elementAt(i)] = true;
+            }
+            if (!outputCheck[levelOfLast.elementAt(i+1)])
+            {
+                output.print(" ");
+            }
+        }
+        if (!outputCheck[levelOfLast.elementAt(levelOfLast.size()-1)])
+        {
+            output.print(levelOfLast.elementAt(levelOfLast.size()-1));
+            outputCheck[levelOfLast.elementAt(levelOfLast.size()-1)] = true;
+        }
+        output.println();
+        output.close();
+    }
+}

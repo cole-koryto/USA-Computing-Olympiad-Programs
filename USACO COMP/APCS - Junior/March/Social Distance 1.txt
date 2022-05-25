@@ -1,0 +1,111 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: socdist1
+*/
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   AP CS
+LAST MODIFIED   :   3/29/20
+PROBLEM ID      :   socdist1
+DESCRIPTION	:   In this problem I had to find the greatest
+                :   distance between the two closest occupied stalls
+                :   once two new cows were added.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+import java.io.*;
+import java.util.*;
+
+class socdist1
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs stalls and declares variables
+        Scanner input = new Scanner(new FileReader("socdist1.in"));
+        int numStalls = input.nextInt();
+        int[] stalls = new int[numStalls];
+        String temp = input.next();
+        input.close();
+        for(int i =0; i<numStalls; ++i)
+            stalls[i] = temp.charAt(i)-48;
+
+        //runs through all possibilities to find smallest distance
+        int smallestDistance = 0;
+        for(int i =0; i<numStalls; ++i)
+        {
+            int currentDistance = numStalls;
+            for(int j =0; j<numStalls; ++j)
+            {
+                //skips a distance check if new cow can't be added
+                if(stalls[i] == 1)
+                    break;
+                boolean occupied = false;
+                if(stalls[j] == 1||i==j)
+                    occupied =true;
+
+                if(!occupied)
+                {
+                    //finds smallest distance for first cow back
+                    int distanceBack = 999999999;
+                    for (int n = i; n >= 0; --n)
+                    {
+                        if (stalls[n] == 1)
+                        {
+                            distanceBack = Math.abs(i - n);
+                            break;
+                        }
+                    }
+
+                    //finds smallest distance for first cow forward
+                    int distanceForward = 999999999;
+                    for (int n = i; n < numStalls; ++n)
+                    {
+                        if (stalls[n] == 1)
+                        {
+                            distanceForward = Math.abs(i - n);
+                            break;
+                        }
+                    }
+
+                    //checks for new currentDistance
+                    currentDistance = Math.min(distanceForward, distanceBack);
+
+                    //finds smallest distance for second cow forward
+                    distanceForward = 999999999;
+                    for (int n = j; n < numStalls; ++n)
+                    {
+                        if (stalls[n] == 1 || n == i)
+                        {
+                            distanceForward = Math.abs(j - n);
+                            break;
+                        }
+                    }
+
+                    //finds smallest distance for second cow back
+                    distanceBack = 999999999;
+                    for (int n = j; n >= 0; --n)
+                    {
+                        if (stalls[n] == 1 || n == i)
+                        {
+                            distanceBack = Math.abs(j - n);
+                            break;
+                        }
+                    }
+
+                    //checks for new currentDistance
+                    int currentDistance2nd = Math.min(distanceForward, distanceBack);
+                    currentDistance = Math.min(currentDistance2nd, currentDistance);
+
+                    if (currentDistance > smallestDistance)
+                        smallestDistance = currentDistance;
+                }
+            }
+        }
+
+        //outputs the largest distance
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("socdist1.out")));
+        output.println(smallestDistance);
+        output.close();
+    }
+}

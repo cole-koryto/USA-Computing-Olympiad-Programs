@@ -1,0 +1,85 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   Adv. CS
+LAST MODIFIED   :   3/1/21
+PROBLEM ID      :   Comfotable Cows
+DESCRIPTION	:   In this problem I had to add cows
+                :   to an array and then find how many were
+                :   adjacent to exactly 3 other cows
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class Main
+{
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(System.in);
+
+        //variable declarations
+        int numCows = input.nextInt();
+        boolean[][] cowPositions = new boolean[1000][1000];
+        for(boolean[] row:cowPositions)
+            Arrays.fill(row, false);
+        int[] xPositions = new int[numCows];
+        int[] yPositions = new int[numCows];
+        for(int i = 0; i < numCows; i++)
+        {
+            xPositions[i] = input.nextInt();
+            yPositions[i] = input.nextInt();
+        }
+        int currentComfortable;
+        int currentAdjacent;
+
+        //adds cows to be checked
+        System.out.println("0\n0");
+        cowPositions[xPositions[0]][yPositions[0]] = true;
+        cowPositions[xPositions[1]][yPositions[1]] = true;
+        for(int i = 2; i < numCows; i++)
+        {
+            currentComfortable = 0;
+            cowPositions[xPositions[i]][yPositions[i]] = true;
+
+            //checks if added cows are comfortable
+            for(int j = 0; j <= i; j++)
+            {
+                currentAdjacent = 0;
+
+                //checks left
+                if(xPositions[j] - 1 >= 0 && cowPositions[xPositions[j] - 1][yPositions[j]])
+                {
+                    currentAdjacent++;
+                }
+
+                //checks right
+                if(xPositions[j] + 1 <= 999 && cowPositions[xPositions[j] + 1][yPositions[j]])
+                {
+                    currentAdjacent++;
+                }
+
+                //checks up
+                if(yPositions[j] - 1 >= 0 && cowPositions[xPositions[j]][yPositions[j] - 1])
+                {
+                    currentAdjacent++;
+                }
+
+                //checks down
+                if(yPositions[j] + 1 <= 999 && cowPositions[xPositions[j]][yPositions[j] + 1])
+                {
+                    currentAdjacent++;
+                }
+
+                //adds if three cows are adjacent
+                if(currentAdjacent == 3)
+                    currentComfortable++;
+            }
+
+            //outputs number of comfortable cows
+            System.out.println(currentComfortable);
+        }
+    }
+}

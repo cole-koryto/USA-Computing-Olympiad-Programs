@@ -1,0 +1,94 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: checker
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Discrete Math
+LAST MODIFIED		:	10/4/20
+PROBLEM ID		:	Checker Challenge
+DESCRIPTION		:	In this problem I had to find  the number
+                	:   	of different combinations of queens that
+                	:   	could be placed on a checker board
+                	:   	so that no piece could hit each other
+                	:   	in one move. Then I had to output
+                	:   	the first three solutions numerically
+                	:   	and then the total number of solutions.
+HELPED ME		:	Xavier Langsdale, Kyle Wagner, USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class checker
+{
+    public static String[] solutions = new String[3];
+    public static int numSolutions = 0;
+    public static int boardSize;
+
+    public static void placepiece(int column, boolean[] rowOpen, boolean[][] diagonalOpen, int[] currentSolution) throws IOException 
+    {
+        //base case
+        if(column == boardSize)
+        {
+            //stores the first three solutions
+            if(numSolutions < 3)
+            {
+                String temp = "";
+                for (int i = 0; i < boardSize; ++i)
+                    temp += (char) (currentSolution[i] + 64);
+                solutions[numSolutions] = temp;
+            }
+            numSolutions++;
+            return;
+        }
+
+        //checks where a piece can be placed and begins new recursion
+        for(int row = 0; row<boardSize;++row)
+        {
+            //checks if row and both diagonals are open then places piece and starts new column
+            if(rowOpen[row] && diagonalOpen[0][column-row+(boardSize-1)] && diagonalOpen[1][column+row])
+            {
+                rowOpen[row] = false;
+                diagonalOpen[0][column-row+(boardSize-1)] = false;
+                diagonalOpen[1][column+row] = false;
+                currentSolution[column] = (row+1);
+                placepiece(column+1, rowOpen,diagonalOpen,currentSolution);
+                rowOpen[row] = true;
+                diagonalOpen[0][column-row+(boardSize-1)] = true;
+                diagonalOpen[1][column+row] = true;
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException
+    {
+        //inputs board size and declares variables
+        Scanner input = new Scanner(new FileReader("checker.in"));
+        boardSize = input.nextInt();
+        input.close();
+        boolean[][] diagonalOpen = new boolean[2][2*boardSize-1];
+        boolean[] rowOpen = new boolean[boardSize];
+        int[] currentSolution = new int[boardSize];
+        Arrays.fill(rowOpen,true);
+        Arrays.fill(diagonalOpen[0],true);
+        Arrays.fill(diagonalOpen[1],true);
+
+        //begins recursion to find all solutions
+        placepiece(0,rowOpen,diagonalOpen,currentSolution);
+
+        //outputs the first three solutions numerically and total number of solutions
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("checker.out")));
+        for(int i =0; i<3; ++i)
+        {
+            for (int j = 0; j < solutions[i].length()-1; ++j)
+                output.print((int)(solutions[i].charAt(j)) - 64 + " ");
+            output.println((int)(solutions[i].charAt(solutions[i].length()-1))-64);
+        }
+        output.println(numSolutions);
+        output.close();
+    }
+}
+
+

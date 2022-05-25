@@ -1,0 +1,98 @@
+/*
+ID: colekor1
+TASK: namenum
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Hexadecimal
+LAST MODIFIED		:	1/18/18
+PROBLEM ID		:	namenum
+DESCRIPTION		:	In this problem I had to find what names
+			:	I could make with a set of numbers where 
+			:	each number had three letters it could be. 
+			:	Then I had to check if these possible names were
+			:	in a given dictionary.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+	//inputs the acceptable names
+	string okNames[5000];
+	ifstream input("dict.txt");
+
+	int counter = 0;
+	while (!input.eof())
+	{
+		input >> okNames[counter];
+		counter++;
+	}
+	input.close();
+
+	//inputs brand number
+	string brand;
+	ifstream fin("namenum.in");
+	fin >> brand;
+
+	//finds possible names
+	vector <string> possibleNames;
+	const int numStringOffset = 48;
+	int check=1;
+	char letters[10][3] = { {'Z','Z','Z'},{'Z','Z','Z'},{'A','B','C'}, {'D','E','F'}, {'G','H','I'} ,{'J','K','L'}, {'M','N','O'}, {'P','R','S'} ,{'T','U','V'}, {'W','X','Y'} };
+
+	for (int i = 0; i < counter; i++)
+	{
+		check = 1;
+		if (okNames[i].length() == brand.length())
+		{
+			for (int j = 0; j < brand.length(); j++)
+			{
+				for (int n = 0; n < 3; n++)
+				{
+					if (okNames[i][j] == letters[brand[j]-numStringOffset][n])
+					{
+						check = 1;
+						break;
+					}
+					if (n == 2)
+					{
+						check = 0;
+						break;
+					}
+
+				}
+				if (check == 0)
+				{
+					break;
+				}
+				if (j == brand.length() - 1)
+				{
+					possibleNames.push_back(okNames[i]);
+				}
+			}	
+		}
+	}
+	if (possibleNames.size() == 0)
+	{
+		possibleNames.push_back("NONE");
+	}
+	
+	//outputs possible names
+	ofstream output("namenum.out");
+	for (int i = 0; i < possibleNames.size(); i++)
+	{
+		output << possibleNames[i] << endl;
+	}
+	output.close();
+
+	//exit program
+	return 0;
+}

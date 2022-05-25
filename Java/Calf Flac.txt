@@ -1,0 +1,106 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: calfflac
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Discrete Math
+LAST MODIFIED		:	9/16/20
+PROBLEM ID		:	Calf Flac
+DESCRIPTION		:	In this problem I had to find the longest
+                	:   	palindromic substring in a file, while
+                	:   	ignoring case and punctuation, and then
+                	:   	output the palindrome in the original
+               		:   	text.
+HELPED ME		:	USACO, Xavier
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class calfflac
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs original text and declares variables
+        Scanner input = new Scanner(new FileReader("calfflac.in"));
+        String originalText = "";
+        int largestPal = 0;
+        int largestStart = -999;
+        int largestEnd = -999;
+        int curEvenLength = 0;
+        int evenCounter = 0;
+        int curOddLength = 0;
+        int oddCounter = 0;
+        boolean pass;
+        while(input.hasNextLine())
+        {
+            originalText += input.nextLine() + "\n";
+        }
+        int[] indexConverter = new int[originalText.length()];
+        input.close();
+
+        //removes all unneeded characters from string
+        String preFiltered = originalText.toUpperCase();
+        String filteredString = "";
+        int filteredIndex = 0;
+        for(int i =0;i<originalText.length(); i++)
+        {
+            if(preFiltered.charAt(i)>=65 && preFiltered.charAt(i)<=90)
+            {
+                filteredString += "" + preFiltered.charAt(i);
+                indexConverter[filteredIndex] = i;
+                filteredIndex++;
+            }
+        }
+        
+        //finds largest palindrome
+        for(int i = 0; i <filteredString.length()-1;i++)
+        {
+            //checks even length palindromes
+            curEvenLength = 0;
+            evenCounter = 0;
+            pass = false;
+            while (i-evenCounter>0 && i+evenCounter+1 < filteredString.length()-1 && filteredString.charAt(i - evenCounter) == filteredString.charAt(i+evenCounter+1))
+            {
+                pass = true;
+                curEvenLength += 2;
+                evenCounter++;
+            }
+            if(pass && curEvenLength > largestPal)
+            {
+                largestPal = curEvenLength;
+                largestStart = i-(evenCounter-1);
+                largestEnd = i+evenCounter;
+            }
+
+            //checks odd length palindromes
+            curOddLength = 1;
+            oddCounter = 0;
+            pass = false;
+            while (i-oddCounter-1>=0 && i+oddCounter+1 < filteredString.length() && filteredString.charAt(i-oddCounter-1) == filteredString.charAt(i+oddCounter+1))
+            {
+                pass = true;
+                curOddLength += 2;
+                oddCounter++;
+            }
+            if(pass && curOddLength > largestPal)
+            {
+                largestPal = curOddLength;
+                largestStart = i-oddCounter;
+                largestEnd = i+oddCounter;
+            }
+        }
+
+        //outputs any number that was found to be prime and a palindrome
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("calfflac.out")));
+        output.println(largestPal);
+        for(int i = indexConverter[largestStart]; i<=indexConverter[largestEnd]; i++)
+            output.print(originalText.charAt(i));
+        output.println();
+        output.close();
+    }
+}
+
+

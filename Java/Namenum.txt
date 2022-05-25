@@ -1,0 +1,92 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: namenum
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	AP CS
+LAST MODIFIED		:	1/8/20
+PROBLEM ID		:	namenum
+DESCRIPTION		:	In this problem I had to find what names
+		    	:	I could make with a set of numbers where
+		    	:	each number had three letters it could be.
+			:	Then I had to check if these possible names were
+			:	in a given dictionary.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+import java.io.*;
+import java.util.*;
+
+class namenum
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs the acceptable names
+        Scanner in = new Scanner(new FileReader("dict.txt"));
+        String[] okNames = new String[5000];
+        int counter = 0;
+        while (in.hasNext())
+        {
+            okNames[counter] = in.next();
+            counter++;
+        }
+        in.close();
+
+        //inputs brand number
+        String brand;
+        Scanner input = new Scanner(new FileReader("namenum.in"));
+        brand = input.next();
+
+        //finds possible names
+        Vector <String> possibleNames= new Vector<String>();
+        final int numStringOffset = 48;
+        int check=1;
+        char[][] letters = { {'Z','Z','Z'},{'Z','Z','Z'},{'A','B','C'}, {'D','E','F'}, {'G','H','I'} ,{'J','K','L'}, {'M','N','O'}, {'P','R','S'} ,{'T','U','V'}, {'W','X','Y'} };
+        for (int i = 0; i < counter; i++)
+        {
+            check = 1;
+            if (okNames[i].length() == brand.length())
+            {
+                for (int j = 0; j < brand.length(); j++)
+                {
+                    for (int n = 0; n < 3; n++)
+                    {
+                        //checks if name is ok
+                        if (okNames[i].charAt(j) == letters[brand.charAt(j)-numStringOffset][n])
+                        {
+                            check = 1;
+                            break;
+                        }
+                        if (n == 2)
+                        {
+                            check = 0;
+                            break;
+                        }
+                    }
+                    if(check == 0)
+                            break;
+                    
+                    //adds name if it works
+                    if (j == brand.length() - 1)
+                        possibleNames.addElement(okNames[i]);
+                }
+            }
+        }
+        switch(possibleNames.size())
+        {
+            case 0:
+                possibleNames.addElement("NONE");
+                break;
+        }
+
+        //outputs possible names
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("namenum.out")));
+        for (int i = 0; i < possibleNames.size(); i++)
+        {
+            output.println(possibleNames.elementAt(i));
+        }
+        output.close();
+    }
+}

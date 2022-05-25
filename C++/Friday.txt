@@ -1,0 +1,101 @@
+/*
+ID: colekor1
+TASK: friday
+LANG: C++
+*/
+/*
+NAME		:	Cole Koryto
+GROUP		:	Hexadecimal
+LAST MODIFIED	:	1/29/19
+PROBLEM ID	:	Friday the Thirteenth
+DESCRIPTION	:	In this problem we need to find
+		:	how many 13ths there are on each day
+		:	over the course of N years.
+HELPED ME	:	USACO, Jack Scheffel
+HELPED		:	Jack Scheffel, Maicee Bishop
+*/
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	//input Years
+	int dayChange[12] = { 3,3,0,3,2,3,2,3,3,2,3,2 };
+	int dayScore[7] = { 0,0,0,0,0,0,0 };
+	int years;
+	int start = 1900;
+	ifstream input("friday.in");
+	input >> years;
+
+	//find the 13ths
+	int day;
+	int moveDay = 3;
+	//Start loop for year
+	for (int i = 0; i < years; i++)
+	{
+		if (start % 4 == 0 || start % 100 == 0)
+		{
+			if (start % 100 == 0)
+			{
+				if (start % 400 == 0)
+				{
+					dayChange[2] = 1;
+				}
+				else
+				{
+					dayChange[2] = 0;
+				}
+			}
+			else
+			{
+				dayChange[2] = 1;
+			}
+		}
+		else
+		{
+			dayChange[2] = 0;
+		}
+
+		//start loop for month
+		for (int j = 0; j < 12; j++)
+		{
+			day = 0;
+			day = moveDay + dayChange[j];
+
+			if (day > 6)
+			{
+				moveDay = day - 7;
+			}
+			else
+			{
+				moveDay = day;
+			}
+			for (int w = 0; w < 7; w++)
+			{
+				if (moveDay == w)
+				{
+					dayScore[w] = dayScore[w] + 1;
+				}
+			}
+		}
+		start++;
+	}
+
+	//output
+	ofstream output("friday.out");
+	output << dayScore[6] << " ";
+	for (int i = 0; i < 5; i++)
+	{
+		output << dayScore[i] << " ";
+	}
+	output << dayScore[5] << endl;
+
+	//exit program
+	return 0;
+}
+
+
+

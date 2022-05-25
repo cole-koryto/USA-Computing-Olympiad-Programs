@@ -1,0 +1,80 @@
+ /*
+ID: colekor1
+TASK: dualpal
+LANG: C++
+*/
+/*
+NAME			:	Cole Koryto
+GROUP			:	Hex
+LAST MODIFIED		:	3/1/19
+PROBLEM ID		:	dualpal
+DESCRIPTION		:	In this problem I had to output in base 10 a given amount of
+			:	numbers that were expressed at least twice as a palindrome
+			:	when converted into base 2-10.
+HELPED ME		:	USACO
+HELPED			:	None
+*/
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+	int number;
+	int amount;
+	int total = 0;
+	int timesExpressed;
+	vector <int> newNum;
+
+	//intputs amount of numbers and starting number
+	ifstream input("dualpal.in");
+	input >> amount >> number;
+	number++;
+	input.close();
+
+	ofstream output("dualpal.out");
+	while(total<amount)
+	{
+		timesExpressed = 0;
+		for (int i = 2; i < 11; i++)
+		{
+			//converts number to proper base
+			int dividend = number;
+			while (dividend != 0)
+			{
+				newNum.push_back(dividend%i);
+				dividend = dividend / i;
+			}
+
+			//checks if palindrome
+			int counter = newNum.size() - 1;
+			int check = 1;
+			for (int j = 0; j < newNum.size() / 2; j++)
+			{
+				if (newNum[j] != newNum[counter])
+				{
+					check = 0;
+				}
+				counter--;
+			}
+			if (check == 1)
+			{
+				timesExpressed++;
+			}
+			newNum.clear();
+			if (timesExpressed == 2)
+			{
+				output << number << endl;
+				total++;
+				break;
+			}
+		}
+		number++;
+	}
+	output.close();
+	
+	//exit program
+	return 0;
+}

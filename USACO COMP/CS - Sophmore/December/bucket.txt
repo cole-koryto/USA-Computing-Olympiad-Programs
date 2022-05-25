@@ -1,0 +1,112 @@
+/*
+ID: colekor1
+TASK: blist
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	ifstream input("blist.in");
+
+	int numCows;
+	input >> numCows;
+
+	int start[100];
+	int end[100];
+	int buckets[100];
+
+	//intputs info
+	for (int i = 0; i < numCows; i++)
+	{
+		input >> start[i] >> end[i] >> buckets[i];
+	}
+
+	//orders times
+	int switchStart, switchEnd, switchBuck;
+
+	for (int i = 0; i < numCows; i++)
+	{
+		for (int j = 0; j < numCows; j++)
+		{
+			if (j == 0)
+			{
+				j += i;
+			}
+			if (start[i] > start[j])
+			{
+				switchStart = start[i];
+				start[i] = start[j];
+				start[j] = switchStart;
+
+				switchEnd = end[i];
+				end[i] = end[j];
+				end[j] = switchEnd;
+
+				switchBuck = buckets[i];
+				buckets[i] = buckets[j];
+				buckets[j] = switchBuck;
+			}
+		}
+	}
+
+	//finds times that are within each other
+	for (int i = 0; i < numCows - 1; i++)
+	{
+		for (int j = 0; j < numCows - 1; j++)
+		{
+			if (j == 0)
+			{
+				j += i;
+			}
+			if (start[j] > start[i] && end[j] < end[i])
+			{
+				buckets[i] += buckets[j];
+				buckets[j] = 0;
+				end[j] = -1;
+			}
+		}
+	}
+
+	int maxBuckets = 0;
+	int currentBuckets = buckets[0];
+	int beginCounter = 1;
+	int endCounter = 0;
+	for (int i = start[0]; i < end[numCows-1]; i++)
+	{
+		if (i == start[beginCounter])
+		{
+			currentBuckets += buckets[beginCounter];
+			beginCounter++;
+			if (currentBuckets > maxBuckets)
+			{
+				maxBuckets = currentBuckets;
+			}
+		}
+		if (i == end[endCounter])
+		{
+			currentBuckets -= buckets[endCounter];
+			endCounter++;
+
+			if (end[endCounter] == -1)
+			{
+				endCounter++;
+			}
+		}
+	}
+
+
+	for (int i = 0; i < numCows; i++)
+	{
+		cout << start[i] << " " << end[i] << " " << buckets[i] << endl;
+	}
+
+	//output
+	ofstream output("blist.out");
+	output << maxBuckets;
+
+	output.close();
+}

@@ -1,0 +1,78 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: socdist2
+*/
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   AP CS
+LAST MODIFIED   :   3/29/20
+PROBLEM ID      :   socdist2
+DESCRIPTION	:   In this problem I had to find the
+                :   smallest number of cows that could
+                :   have been infected at the start to
+                :   produce the situation that is given.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+import java.io.*;
+import java.util.*;
+
+class socdist2
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs cows and declares variables
+        Scanner input = new Scanner(new FileReader("socdist2.in"));
+        int numCows = input.nextInt();
+        int[] cowsInfected = new int[numCows];
+        int infectedCounter = 0, notInfectedCounter=0;
+        int[] cowsNotInfected = new int[numCows];
+        int tempPos, tempState;
+        int radius=99999999;
+        for(int i =0; i<numCows; ++i)
+        {
+            tempPos = input.nextInt();
+            tempState = input.nextInt();
+            if(tempState == 0)
+            {
+                cowsNotInfected[notInfectedCounter] = tempPos;
+                notInfectedCounter++;
+            }
+            if(tempState == 1)
+            {
+                cowsInfected[infectedCounter] = tempPos;
+                infectedCounter++;
+            }
+        }
+        input.close();
+
+        //finds infection radius
+        for(int i =0; i<notInfectedCounter; ++i)
+        {
+            int closest = 99999999;
+            for (int j = 0; j < infectedCounter; ++j)
+            {
+                if(Math.abs(cowsNotInfected[i]-cowsInfected[j])<closest)
+                    closest=Math.abs(cowsNotInfected[i]-cowsInfected[j]);
+            }
+            if(closest<radius)
+                radius = closest;
+        }
+
+        //finds the number of groups of infected
+        int realStart = numCows-infectedCounter;
+        Arrays.sort(cowsInfected);
+        int numGroups = 1;
+        for(int i = realStart; i<infectedCounter+realStart-1; ++i)
+        {
+            if (cowsInfected[i + 1] - cowsInfected[i] >= radius)
+                numGroups++;
+        }
+
+        //outputs min number of infected cows
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("socdist2.out")));
+        output.println(numGroups);
+        output.close();
+    }
+}

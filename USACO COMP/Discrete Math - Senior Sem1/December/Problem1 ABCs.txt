@@ -1,0 +1,56 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   DM
+LAST MODIFIED   :   12/19/20
+PROBLEM ID      :   Do You Know Your ABCs?
+DESCRIPTION	:   In this problem I had to find the three
+                :   variables A,B,C based off of
+                :   seven input numbers.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+public class Main
+{
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(System.in);
+
+        //declares variables
+        int[] numbers = new int[7];
+        String result = "";
+        for(int i =0;i<7;i++)
+            numbers[i] = input.nextInt();
+        Arrays.sort(numbers);
+        int biggest = numbers[6];
+
+        //checks to see which numbers work
+        boolean found = false;
+        for(int i = 0; i<6;i++)
+        {
+            for(int j = 0; j<6;j++)
+            {
+                for(int n = 0; n<6;n++)
+                {
+                    if(numbers[i] + numbers[j] + numbers[n] == biggest)
+                    {
+                        result = numbers[i] + " " + numbers[j] + " " + numbers[n];
+                        found = true;
+                        break;
+                    }
+                }
+                if(found)
+                    break;
+            }
+            if(found)
+                break;
+        }
+
+        //outputs result
+        System.out.println(result);
+    }
+}

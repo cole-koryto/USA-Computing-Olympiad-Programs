@@ -1,0 +1,84 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: frac1
+*/
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   DM
+LAST MODIFIED   :   1/21/21
+PROBLEM ID      :   Ordered Fractions
+DESCRIPTION	:   In this problem I had to list all of
+                :   the fractions from 0 to 1 with a max 
+                :   denominator of N from least to greatest.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class frac1
+{
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(new FileReader("frac1.in"));
+
+        //variable declarations
+        int maxDenominator = input.nextInt();
+        input.close();
+        ArrayList<Double> fractionsDoubleRAW = new ArrayList<Double>();
+        ArrayList<String> fractionsStringRAW = new ArrayList<String>();
+        fractionsDoubleRAW.add(0.0);
+        fractionsStringRAW.add(0 + "/" + 1);
+
+        //makes all needed fractions
+        for(int i = 1; i <= maxDenominator; i++)
+        {
+            for(int j = 1; j < i; j++)
+            {
+                fractionsDoubleRAW.add((double)j/i);
+                fractionsStringRAW.add(j + "/" + i);
+            }
+        }
+        
+        //removes repeated values
+        ArrayList<Double> fractionsDouble = new ArrayList<Double>();
+        ArrayList<String> fractionsString = new ArrayList<String>();
+        for (int i = 0; i < fractionsDoubleRAW.size(); i++)
+        {
+            if (!fractionsDouble.contains(fractionsDoubleRAW.get(i)))
+            {
+                fractionsDouble.add(fractionsDoubleRAW.get(i));
+                fractionsString.add(fractionsStringRAW.get(i));
+            }
+        }
+
+        //sorts the fractions
+        double currentDouble;
+        String currentString;
+        int j;
+        for (int i = 1; i < fractionsDouble.size(); i++)
+        {
+            currentDouble = fractionsDouble.get(i);
+            currentString = fractionsString.get(i);
+            j = i - 1;
+            while(j >= 0 && currentDouble < fractionsDouble.get(j))
+            {
+                fractionsDouble.set(j+1,fractionsDouble.get(j));
+                fractionsString.set(j+1,fractionsString.get(j));
+                j--;
+            }
+            fractionsDouble.set(j+1,currentDouble);
+            fractionsString.set(j+1,currentString);
+        }
+
+        //output results
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("frac1.out")));
+        for(int i = 0; i < fractionsDouble.size(); i++)
+            output.println(fractionsString.get(i));
+        output.println("1/1");
+        output.close();
+    }
+}

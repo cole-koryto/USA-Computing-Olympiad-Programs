@@ -1,0 +1,79 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: sort3
+*/
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   AP CS
+LAST MODIFIED   :   3/27/20
+PROBLEM ID      :   Sort3
+DESCRIPTION	:   In this problem I had to find the most
+                :   exchange efficient way to sort a list of values
+                :   and then output the lest number of exchanges possible given
+                :   the list.
+HELPED ME	:   USACO, Xavier
+HELPED		:   None
+*/
+import java.io.*;
+import java.util.*;
+
+class sort3
+{
+    public static void main(String[] args) throws IOException
+    {
+        //inputs places and declares variables
+        Scanner input = new Scanner(new FileReader("sort3.in"));
+        int totalExchanges = 0;
+        int numRecords = input.nextInt();
+        int[] positionsSorted = new int[numRecords];
+        for(int i =0; i<numRecords; i++)
+            positionsSorted[i] = input.nextInt();
+
+        //finds sorted positions
+        int[] positionsOriginal = new int[numRecords];
+        for(int i =0; i<numRecords; i++)
+            positionsOriginal[i] = positionsSorted[i];
+        Arrays.sort(positionsSorted);
+
+        //finds pairs that can be directly swapped
+        for(int i =0; i<numRecords; i++)
+        {
+            for(int j =0; j<numRecords; j++)
+            {
+                //if two pairs can be directly swapped they are
+                if(i!=j&&positionsOriginal[j]==positionsSorted[i]&&positionsOriginal[i]==positionsSorted[j]&&positionsOriginal[i]!=positionsOriginal[j])
+                {
+                    totalExchanges++;
+                    int temp = positionsOriginal[i];
+                    positionsOriginal[i] = positionsOriginal[j];
+                    positionsOriginal[j] = temp;
+                }
+            }
+        }
+
+        //swaps all remaining
+        for(int i =0; i<numRecords; i++)
+        {
+            boolean unmatched = false;
+            if(positionsOriginal[i]!=positionsSorted[i])
+                unmatched = true;
+            for(int j =0; j<numRecords; j++)
+            {
+                //finds the right number to put in the current position
+                if(unmatched&&positionsOriginal[j]==positionsSorted[i]&&positionsOriginal[i]!=positionsOriginal[j]&&positionsOriginal[j]!=positionsSorted[j])
+                {
+                    totalExchanges++;
+                    int temp = positionsOriginal[i];
+                    positionsOriginal[i] = positionsOriginal[j];
+                    positionsOriginal[j] = temp;
+                }
+            }
+        }
+
+        //outputs the last number
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("sort3.out")));
+        output.println(totalExchanges);
+        output.close();
+    }
+}

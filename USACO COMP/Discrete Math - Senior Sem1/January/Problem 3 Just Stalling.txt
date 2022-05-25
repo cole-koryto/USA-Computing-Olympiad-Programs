@@ -1,0 +1,64 @@
+/*
+NAME	        :   Cole Koryto
+GROUP	        :   DM
+LAST MODIFIED   :   1/22/21
+PROBLEM ID      :   Just Stalling
+DESCRIPTION	:   In this problem I had to find
+		:   the total amount of ways
+		:   cows of a given height could
+		:   be placed into stalls with a 
+		:   given height limit.
+HELPED ME	:   USACO
+HELPED		:   None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class Main
+{
+    private static int numCows;
+    private static int[] stallLimits = new int[20];
+    private static long totalCombinations = 0;
+    private static ArrayList<Integer> cowHeights = new ArrayList<Integer>();
+    public static void generateStalls(int currentStall, String cowCombination, ArrayList<Integer> cowHeights)
+    {
+        //base case
+        if(currentStall == numCows)
+            totalCombinations++;
+        else
+        {
+            //recurses through all stalls to find all the possible combinations
+            for(int i = 0; i < cowHeights.size(); i++)
+            {
+                ArrayList<Integer> tempArrayList = new ArrayList<>(cowHeights);
+
+                if(cowHeights.get(i) <= stallLimits[currentStall])
+                {
+                    tempArrayList.remove(i);
+                    generateStalls(currentStall+1, cowCombination + cowHeights.get(i), tempArrayList);
+                }
+            }
+        }
+    }
+
+    public static void main(String args[]) throws IOException
+    {
+        //sets up input and output
+        Scanner input = new Scanner(System.in);
+
+        //variable declarations
+        numCows = input.nextInt();
+        stallLimits = new int[numCows];
+        for(int i = 0; i<numCows; i++)
+            cowHeights.add(input.nextInt());
+        for(int i = 0; i<numCows; i++)
+            stallLimits[i] = input.nextInt();
+
+        //finds all possible combinations
+        generateStalls(0,"", cowHeights);
+
+        //output results
+        System.out.println(totalCombinations);
+    }
+}

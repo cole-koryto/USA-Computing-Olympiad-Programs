@@ -1,0 +1,87 @@
+/*
+ID: colekor1
+TASK: gymnastics
+LANG: JAVA
+*/
+/*
+NAME	    :	Cole Koryto
+GROUP	    :	AP CS
+PROGRAM     :   Cow Gymnastics
+CONTEST     :   Bronze
+DATE        :   12/15/19
+*/
+
+import java.util.*;
+import java.io.*;
+
+class Main
+{
+    public static void main(String[] args) throws IOException
+    {
+        //declares variables and inputs results
+        Scanner input = new Scanner(new FileReader("gymnastics.in"));
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("gymnastics.out")));
+        int numRows = input.nextInt();
+        int numCows = input.nextInt();
+        int[][] sessions = new int[numRows][numCows];
+        int numConsistent = 0;
+        for(int i = 0; i<numRows; i++)
+        {
+            for (int j = 0; j < numCows; j++)
+            {
+                sessions[i][j] = input.nextInt();
+            }
+        }
+        input.close();
+
+        //finds number of consistent pairs
+        for(int i =0; i<numCows-1; i++)
+        {
+            int firstCheck = sessions[0][i];
+            for(int k = i+1; k<numCows; k++)
+            {
+                boolean fail = false;
+                int secondCheck = sessions[0][k];
+
+                //checks on each row
+                for (int j = 0; j < numRows; j++)
+                {
+                    int numFound = 0;
+                    int firstIndex = 0, secondIndex = 0;
+
+                    //finds index of the cow that is being checked
+                    for (int n = 0; n < numCows; n++)
+                    {
+                        if(sessions[j][n] == firstCheck)
+                        {
+                            numFound++;
+                            firstIndex = n;
+                        }
+                        if(sessions[j][n] == secondCheck)
+                        {
+                            numFound++;
+                            secondIndex = n;
+                        }
+                        if(numFound == 2)
+                            break;
+                    }
+
+                    //evaluates row
+                    if(secondIndex < firstIndex)
+                    {
+                        fail = true;
+                        break;
+                    }
+                    if(j == numRows-1 && !false)
+                    {
+                        numConsistent++;
+                    }
+                }
+            }
+        }
+
+        //outputs the number of consistent pairs
+        output.println(numConsistent);
+        output.close();
+    }
+}

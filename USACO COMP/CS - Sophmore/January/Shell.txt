@@ -1,0 +1,64 @@
+/*
+ID: colekor1
+TASK: shell
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+	int swaps;
+	int guess[100];
+	int highest = 0;
+	int move1[100], move2[100];
+	const int offset = 1;
+	int score = 0;
+	int place;
+	int moved;
+
+	ifstream input("shell.in");
+	input >> swaps;
+	
+	for (int i = 0; i < swaps; i++)
+	{
+		input >> move1[i] >> move2[i] >> guess[i];
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		place = i;
+		for (int j = 0; j < swaps; j++)
+		{
+			//moves pebble
+			moved = 0;
+			
+			if (place == move1[j]-offset)
+			{
+				place = move2[j] - offset;
+				moved = 1;
+			}
+			if (place == move2[j] - offset && moved == 0)
+			{
+				place = move1[j] - offset;
+			}
+
+			//adds points
+			if (guess[j]-offset == place)
+			{
+				score++;
+			}
+		}
+		if (score > highest)
+		{
+			highest = score;
+		}
+		score = 0;
+	}
+	
+	//output
+	ofstream output("shell.out");
+	output << highest;
+}

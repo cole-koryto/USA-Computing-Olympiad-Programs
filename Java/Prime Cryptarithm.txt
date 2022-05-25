@@ -1,0 +1,161 @@
+/*
+ID:   colekor1
+LANG: JAVA
+TASK: crypt1
+*/
+/*
+NAME	        :	Cole Koryto
+GROUP	        :	AP CS
+LAST MODIFIED   :	11/8/19
+PROBLEM ID      :	Prime Cryptarithm
+DESCRIPTION	:   	In this problem I had to input a set of allowed 
+                :   	numbers and then count the number of three
+                :   	to two digit multiplications that would follow the
+                :   	parameters. 
+HELPED ME	:	USACO
+HELPED		:	None
+*/
+
+import java.io.*;
+import java.util.*;
+
+class crypt1
+{
+    public static void main (String[] args) throws IOException
+    {
+        //declares variables
+        Scanner input = new Scanner(new FileReader("crypt1.in"));
+        int totalNums = input.nextInt();
+        int[] set = new int[totalNums];
+        int sum1 = 0;
+        int sum2 = 0;
+        int sumFinal = 0;
+        int fail = 1;
+        int totalPossible = 0;
+
+        //inputs possible numbers
+        for(int i =0; i<totalNums; i++)
+        {
+            set[i] = input.nextInt();
+        }
+
+        //orders set
+        int temp = 0;
+        for(int i = 0; i<totalNums; i++)
+        {
+            for(int j= i; j<totalNums; j++)
+            {
+                if(set[i]>set[j])
+                {
+                    temp = set[i];
+                    set[i] =set[j];
+                    set[j] = temp;
+                }
+            }
+        }
+
+        //runs though all possible calculations
+        for(int i = 0; i <totalNums; i++)
+        {
+            for(int j = 0; j <totalNums; j++)
+            {
+                for(int n = 0; n <totalNums; n++)
+                {
+                    for(int k = 0; k <totalNums; k++)
+                    {
+                        for(int u = 0; u <totalNums; u++)
+                        {
+                            //calculates each part of the problem
+                            sum1 = (set[i]*100+set[j]*10+set[n])*set[u];
+                            if(sum1>999 || sum1 <100)
+                                break;
+                            sum2 = (set[i]*100+set[j]*10+set[n])*set[k];
+                            if(sum2>999 || sum2 < 100)
+                                break;
+                            sumFinal = sum2*10+sum1;
+                            if(sumFinal>9999 || sumFinal <1000)
+                                break;
+
+                            //checks if the sum1 is only made of set numbers
+                            for(int w = 0; w<3; w++)
+                            {
+                                fail = 1;
+                                for(int q = 0; q < totalNums; q++)
+                                {
+                                    if((int)((sum1/Math.pow(10, w))%10) == set[q])
+                                    {
+                                        fail = 0;
+                                        break;
+                                    }
+                                    if(q == totalNums-1 && fail == 1)
+                                    {
+                                        fail = 2;
+                                    }
+                                }
+                                if(fail == 2)
+                                    break;
+                            }
+
+                            if(fail != 2)
+                            {
+                                //checks if the sum2 is only made of set numbers
+                                for (int w = 0; w < 3; w++)
+                                {
+                                    fail = 1;
+                                    for (int q = 0; q < totalNums; q++)
+                                    {
+                                        if ((int) ((sum2 / Math.pow(10, w)) % 10) == set[q])
+                                        {
+                                            fail = 0;
+                                            break;
+                                        }
+                                        if (q == totalNums - 1 && fail == 1)
+                                        {
+                                            fail = 2;
+                                        }
+                                    }
+                                    if (fail == 2)
+                                        break;
+                                }
+                            }
+
+                            if(fail != 2)
+                            {
+                                //checks if the sumFinal is only made of set numbers
+                                for (int w = 0; w < 4; w++)
+                                {
+                                    fail = 1;
+                                    for (int q = 0; q < totalNums; q++)
+                                    {
+                                        if ((int) ((sumFinal / Math.pow(10, w)) % 10) == set[q])
+                                        {
+                                            fail = 0;
+                                            break;
+                                        }
+                                        if (q == totalNums - 1 && fail == 1)
+                                        {
+                                            fail = 2;
+                                        }
+                                    }
+                                    if (fail == 2)
+                                        break;
+                                }
+                            }
+
+                            //adds to totalPossible if all numbers work
+                            if(fail == 0)
+                            {
+                                totalPossible++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //outputs the answer to each question
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("crypt1.out")));
+        output.println(totalPossible);
+        output.close();
+    }
+}
